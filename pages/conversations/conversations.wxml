@@ -1,0 +1,37 @@
+<!-- pages/conversations/conversations.wxml -->
+<view class="container">
+  <view class="header">
+    <text class="title">对话记录</text>
+  </view>
+  
+  <view class="conversation-list">
+    <block wx:if="{{conversations.length > 0}}">
+      <view class="conversation-item" wx:for="{{conversations}}" wx:key="id" bindtap="viewConversationDetail" data-id="{{item.id}}">
+        <view class="conversation-header">
+          <text class="conversation-date">{{item.date}}</text>
+          <text class="conversation-duration">{{item.duration}}分钟</text>
+        </view>
+        <view class="conversation-content">
+          <text class="conversation-title">{{item.title || '对话 ' + index}}</text>
+          <text class="conversation-preview">{{item.preview}}</text>
+        </view>
+        <view class="conversation-stats">
+          <text class="stat-item">问题数: {{item.questionCount}}</text>
+          <text class="stat-item">回答数: {{item.answerCount}}</text>
+          <text class="stat-item">新单词: {{item.newWordsCount}}</text>
+        </view>
+      </view>
+    </block>
+    <view class="empty-list" wx:else>
+      <text>暂无对话记录</text>
+    </view>
+  </view>
+  
+  <view class="loading" wx:if="{{loading}}">
+    <text>加载中...</text>
+  </view>
+  
+  <view class="no-more" wx:if="{{!hasMore && conversations.length > 0}}">
+    <text>没有更多记录了</text>
+  </view>
+</view>

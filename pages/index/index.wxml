@@ -1,0 +1,76 @@
+<!-- pages/index/index.wxml -->
+<view class="container">
+  <view class="header">
+    <view class="user-info">
+      <block wx:if="{{!hasUserInfo && canIUse}}">
+        <button open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
+      </block>
+      <block wx:else>
+        <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
+        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+      </block>
+    </view>
+  </view>
+  
+  <view class="child-info" wx:if="{{childInfo}}">
+    <view class="child-header">
+      <text class="child-name">{{childInfo.name}}</text>
+      <text class="child-age">{{childInfo.age}}岁</text>
+      <button class="edit-btn" bindtap="navigateToChildProfile">编辑</button>
+    </view>
+    <view class="child-details">
+      <view class="detail-item">
+        <text class="label">英语水平:</text>
+        <text class="value">{{childInfo.englishLevel}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="label">兴趣爱好:</text>
+        <text class="value">{{childInfo.interests}}</text>
+      </view>
+      <view class="detail-item">
+        <text class="label">学习时长:</text>
+        <text class="value">{{childInfo.learningTime}}分钟</text>
+      </view>
+    </view>
+  </view>
+  
+  <view class="ai-status">
+    <text class="status-label">AI助手状态:</text>
+    <text class="status-value {{aiStatus === '在线' ? 'online' : 'offline'}}">{{aiStatus}}</text>
+  </view>
+  
+  <!-- 修改快捷操作区域，使按钮横向排列 -->
+  <view class="quick-actions">
+    <view class="action-item" bindtap="navigateToConversations">
+      <view class="action-icon">📝</view>
+      <text class="action-text">查看对话</text>
+    </view>
+    <view class="action-item" bindtap="navigateToMaterials">
+      <view class="action-icon">📤</view>
+      <text class="action-text">学习材料</text>
+    </view>
+    <view class="action-item" bindtap="navigateToInstructions">
+      <view class="action-icon">📢</view>
+      <text class="action-text">发送指令</text>
+    </view>
+  </view>
+  
+  <!-- 优化最近对话记录区域 -->
+  <view class="recent-conversations">
+    <view class="section-header">
+      <text class="section-title">最近对话</text>
+      <text class="view-all" bindtap="navigateToConversations">查看全部</text>
+    </view>
+    <view class="conversation-container">
+      <block wx:if="{{recentConversations.length > 0}}">
+        <view class="conversation-item" wx:for="{{recentConversations}}" wx:key="id">
+          <view class="conversation-time">{{item.time}}</view>
+          <view class="conversation-preview">{{item.preview}}</view>
+        </view>
+      </block>
+      <view class="empty-list" wx:else>
+        <text>暂无对话记录</text>
+      </view>
+    </view>
+  </view>
+</view>

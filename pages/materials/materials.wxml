@@ -1,0 +1,187 @@
+<!-- pages/materials/materials.wxml -->
+<view class="container">
+  <view class="header">
+    <text class="title">学习材料</text>
+  </view>
+  
+  <!-- 搜索栏 -->
+    <view class="search-bar">
+    <view class="search-input-wrapper">
+        <icon type="search" size="14" color="#999"></icon>
+        <input class="search-input" placeholder="搜索学习材料" bindinput="onSearchInput" confirm-type="search" bindconfirm="onSearch"></input>
+    </view>
+    <view class="upload-btn" bindtap="showUploadOptions">
+        <text class="upload-icon">+</text>
+    </view>
+    </view>
+  
+<!-- 分类导航 -->
+<view class="category-tabs">
+  <view class="category-item {{selectedCategory === '全部' ? 'active' : ''}}" bindtap="changeCategory" data-category="全部">全部</view>
+  <view class="category-item {{selectedCategory === category ? 'active' : ''}}" 
+        wx:for="{{categories}}" wx:for-item="category" wx:key="*this" 
+        bindtap="changeCategory" data-category="{{category}}">
+    {{category}}
+  </view>
+</view>
+  
+  <!-- 官方推荐区域 -->
+  <view class="official-section" wx:if="{{officialMaterials.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">官方推荐</text>
+      <text class="view-more" bindtap="viewMoreOfficial">查看更多</text>
+    </view>
+    <scroll-view class="official-scroll" scroll-x="true">
+      <view class="official-list">
+        <view class="official-item" wx:for="{{officialMaterials}}" wx:key="id" bindtap="viewOfficialDetail" data-id="{{item.id}}">
+          <image class="official-cover" src="{{item.coverUrl || '/images/default_cover.png'}}"></image>
+          <view class="official-info">
+            <text class="official-title">{{item.title}}</text>
+            <text class="official-category">{{item.category}}</text>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+  
+  <!-- 我的上传区域 -->
+  <view class="my-uploads-section">
+    <view class="section-header">
+      <text class="section-title">我的上传</text>
+      <text class="sort-btn" bindtap="toggleSortOrder">{{sortOrder === 'time' ? '按时间排序' : '按名称排序'}} ▼</text>
+    </view>
+    
+    <view class="material-list">
+      <block wx:if="{{materials.length > 0}}">
+        <view class="material-item" wx:for="{{materials}}" wx:key="id" bindtap="viewMaterialDetail" data-id="{{item.id}}">
+          <view class="material-icon" style="background-color: {{getColorByType(item.fileType)}}">
+            <text>{{getIconByType(item.fileType)}}</text>
+          </view>
+          <view class="material-info">
+            <view class="material-title">{{item.title}}</view>
+            <view class="material-meta">
+              <text class="material-category">{{item.category}}</text>
+              <text class="material-date">{{item.uploadDate}}</text>
+            </view>
+            <view class="material-status">
+              <text class="status-tag {{item.status === '已学习' ? 'learned' : 'pending'}}">{{item.status}}</text>
+            </view>
+          </view>
+          <view class="material-actions">
+            <view class="action-btn edit" catchtap="editMaterial" data-id="{{item.id}}">
+              <text class="action-icon">✏️</text>
+            </view>
+            <view class="action-btn delete" catchtap="deleteMaterial" data-id="{{item.id}}">
+              <text class="action-icon">🗑️</text>
+            </view>
+          </view>
+        </view>
+      </block>
+      <view class="empty-list" wx:else>
+        <image class="empty-icon" src="/images/empty_file.png"></image>
+        <text>暂无上传材料</text>
+        <button class="add-btn" bindtap="showUploadOptions">立即添加</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 上传选项弹窗 -->
+  <view class="modal" wx:if="{{showUploadModal}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">添加学习材料</text>
+        <icon type="clear" size="20" bindtap="hideUploadModal"></icon>
+      </view>
+      <view class="upload-options">
+        <view class="upload-option" bindtap="chooseFile">
+          <view class="option-icon document">📄</view>
+          <text class="option-text">上传文档</text>
+          <text class="option-desc">支持PDF、Word、TXT等</text>
+        </view>
+        <view class="upload-option" bindtap="chooseImage">
+          <view class="option-icon image">🖼️</view>
+          <text class="option-text">上传图片</text>
+          <text class="option-desc">支持JPG、PNG等</text>
+        </view>
+        <view class="upload-option" bindtap="inputText">
+          <view class="option-icon text">📝</view>
+          <text class="option-text">输入文字</text>
+          <text class="option-desc">直接输入文本内容</text>
+        </view>
+        <view class="upload-option" bindtap="recordAudio">
+          <view class="option-icon audio">🎤</view>
+          <text class="option-text">录制音频</text>
+          <text class="option-desc">录制语音内容</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 文本输入弹窗 -->
+  <view class="modal" wx:if="{{showTextInputModal}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">输入文本内容</text>
+        <icon type="clear" size="20" bindtap="hideTextInputModal"></icon>
+      </view>
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">标题</text>
+          <input class="form-input" placeholder="请输入标题" value="{{newMaterial.title}}" bindinput="inputTitle"></input>
+        </view>
+        <view class="form-item">
+          <text class="form-label">分类</text>
+          <picker mode="selector" range="{{categories}}" value="{{categories.indexOf(newMaterial.category)}}" bindchange="selectCategory">
+            <view class="picker">{{newMaterial.category}}</view>
+          </picker>
+        </view>
+        <view class="form-item">
+          <text class="form-label">内容</text>
+          <textarea class="form-textarea" placeholder="请输入内容" value="{{newMaterial.content}}" bindinput="inputContent"></textarea>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="hideTextInputModal">取消</button>
+        <button class="confirm-btn" bindtap="saveTextMaterial">保存</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 文件上传弹窗 -->
+  <view class="modal" wx:if="{{showFileUploadModal}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">上传文件</text>
+        <icon type="clear" size="20" bindtap="hideFileUploadModal"></icon>
+      </view>
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">标题</text>
+          <input class="form-input" placeholder="请输入标题" value="{{newMaterial.title}}" bindinput="inputTitle"></input>
+        </view>
+        <view class="form-item">
+          <text class="form-label">分类</text>
+          <picker mode="selector" range="{{categories}}" value="{{categories.indexOf(newMaterial.category)}}" bindchange="selectCategory">
+            <view class="picker">{{newMaterial.category}}</view>
+          </picker>
+        </view>
+        <view class="form-item">
+          <text class="form-label">文件</text>
+          <view class="file-info" wx:if="{{newMaterial.fileName}}">
+            <text class="file-name">{{newMaterial.fileName}}</text>
+            <text class="file-size">{{newMaterial.fileSize}}</text>
+          </view>
+          <button class="file-btn" bindtap="chooseFile" wx:else>选择文件</button>
+        </view>
+        <view class="form-item">
+          <text class="form-label">描述(选填)</text>
+          <textarea class="form-textarea" placeholder="请输入描述" value="{{newMaterial.description}}" bindinput="inputDescription"></textarea>
+        </view>
+      </view>
+      <view class="modal-footer">
+        <button class="cancel-btn" bindtap="hideFileUploadModal">取消</button>
+        <button class="confirm-btn" bindtap="uploadMaterial">上传</button>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,90 @@
+<!-- pages/materialDetail/materialDetail.wxml -->
+<view class="container">
+  <view class="header">
+    <view class="back-btn" bindtap="navigateBack">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="title">材料详情</text>
+  </view>
+  
+  <view class="material-info">
+    <view class="material-title">{{material.title}}</view>
+    <view class="material-meta">
+      <text class="material-category">{{material.category}}</text>
+      <text class="material-date">上传于 {{material.uploadDate}}</text>
+    </view>
+    <view class="material-description" wx:if="{{material.description}}">
+      <text>{{material.description}}</text>
+    </view>
+  </view>
+  
+  <!-- 文本内容 -->
+  <view class="content-section" wx:if="{{material.fileType === 'text'}}">
+    <view class="content-text">{{material.content}}</view>
+  </view>
+  
+  <!-- PDF预览 -->
+  <view class="content-section" wx:elif="{{material.fileType === 'pdf'}}">
+    <web-view src="{{material.fileUrl}}" wx:if="{{material.fileUrl}}"></web-view>
+    <view class="preview-placeholder" wx:else>
+      <text>PDF预览加载中...</text>
+    </view>
+  </view>
+  
+  <!-- 图片预览 -->
+  <view class="content-section" wx:elif="{{material.fileType === 'image'}}">
+    <image class="preview-image" src="{{material.fileUrl}}" mode="aspectFit"></image>
+  </view>
+  
+  <!-- 音频播放 -->
+  <view class="content-section" wx:elif="{{material.fileType === 'audio'}}">
+    <view class="audio-player">
+      <view class="audio-title">{{material.fileName}}</view>
+      <view class="audio-controls">
+        <view class="control-btn" bindtap="audioPlay">
+          <text class="control-icon">{{isPlaying ? '⏸️' : '▶️'}}</text>
+        </view>
+        <slider class="audio-slider" value="{{audioProgress}}" bindchange="audioSeek" block-size="12"></slider>
+        <text class="audio-time">{{currentTime}}/{{duration}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 其他文件类型 -->
+  <view class="content-section" wx:else>
+    <view class="file-info">
+      <view class="file-icon" style="background-color: {{getColorByType(material.fileType)}}">
+        <text>{{getIconByType(material.fileType)}}</text>
+      </view>
+      <view class="file-details">
+        <text class="file-name">{{material.fileName}}</text>
+        <text class="file-size">{{material.fileSize}}</text>
+      </view>
+    </view>
+    <button class="download-btn" bindtap="downloadFile">下载文件</button>
+  </view>
+  
+  <!-- AI学习按钮 -->
+  <view class="action-buttons">
+    <button class="ai-learn-btn" bindtap="aiLearnMaterial">让AI学习此材料</button>
+    <button class="ai-explain-btn" bindtap="aiExplainMaterial">让AI讲解此材料</button>
+  </view>
+  
+  <!-- 相关推荐 -->
+  <view class="related-section" wx:if="{{relatedMaterials.length > 0}}">
+    <view class="section-header">
+      <text class="section-title">相关推荐</text>
+    </view>
+    <view class="related-list">
+      <view class="related-item" wx:for="{{relatedMaterials}}" wx:key="id" bindtap="viewRelatedMaterial" data-id="{{item.id}}">
+        <view class="related-icon" style="background-color: {{getColorByType(item.fileType)}}">
+          <text>{{getIconByType(item.fileType)}}</text>
+        </view>
+        <view class="related-info">
+          <text class="related-title">{{item.title}}</text>
+          <text class="related-category">{{item.category}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

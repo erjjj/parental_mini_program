@@ -1,0 +1,48 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/conversations/conversations",
+    "pages/materials/materials",
+    "pages/settings/settings",
+    "pages/instructions/instructions",
+    "pages/childProfile/childProfile"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#4A90E2",
+    "navigationBarTitleText": "儿童英语学习助手",
+    "navigationBarTextStyle": "white"
+  },
+  "tabBar": {
+    "color": "#999999",
+    "selectedColor": "#4A90E2",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "images/home.png",
+        "selectedIconPath": "images/home.png"
+      },
+      {
+        "pagePath": "pages/conversations/conversations",
+        "text": "对话记录",
+        "iconPath": "images/chat.png",
+        "selectedIconPath": "images/chat.png"
+      },
+      {
+        "pagePath": "pages/materials/materials",
+        "text": "学习材料",
+        "iconPath": "images/material.png",
+        "selectedIconPath": "images/material.png"
+      },
+      {
+        "pagePath": "pages/settings/settings",
+        "text": "设置",
+        "iconPath": "images/settings.png",
+        "selectedIconPath": "images/settings.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json"
+}
