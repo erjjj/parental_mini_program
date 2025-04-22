@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "mysql": "^2.18.1",
     "weui-miniprogram": "^1.5.6"
   }
 }

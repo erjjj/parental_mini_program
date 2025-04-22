@@ -14,7 +14,7 @@ Page({
       password: ''
     },
     registerForm: {
-      username: '',
+      id: '',
       password: '',
       confirmPassword: '',
       email: '',
@@ -56,7 +56,7 @@ Page({
     if (token) {
       // 验证token有效性
       wx.request({
-        url: 'https://your-api-server.com/api/verify-token',
+        url: 'http://localhost:3000/api/verify-token',
         header: {
           'Authorization': 'Bearer ' + token
         },
@@ -130,7 +130,7 @@ Page({
   
   inputRegisterUsername: function(e) {
     this.setData({
-      'registerForm.username': e.detail.value
+      'registerForm.id': e.detail.value
     })
   },
   
@@ -151,13 +151,13 @@ Page({
       'registerForm.email': e.detail.value
     })
   },
-  
+
   inputRegisterPhone: function(e) {
     this.setData({
       'registerForm.phone': e.detail.value
     })
   },
-  
+
   login: function() {
     // 表单验证
     if (!this.data.loginForm.username || !this.data.loginForm.password) {
@@ -174,9 +174,9 @@ Page({
     
     // 发送登录请求
     wx.request({
-      url: 'https://your-api-server.com/api/login',
+      url: 'http://localhost:3000/api/login',
       method: 'POST',
-      data: this.data.loginForm,
+      data: {id: parseInt(this.data.loginForm.username), password: this.data.loginForm.password},
       success: (res) => {
         if (res.data.success) {
           // 登录成功，保存token
@@ -215,7 +215,7 @@ Page({
   
   register: function() {
     // 表单验证
-    if (!this.data.registerForm.username || !this.data.registerForm.password || !this.data.registerForm.confirmPassword) {
+    if (!this.data.registerForm.id || !this.data.registerForm.password || !this.data.registerForm.confirmPassword) {
       wx.showToast({
         title: '请填写必要信息',
         icon: 'none'
@@ -231,13 +231,13 @@ Page({
       return
     }
     
-    wx.showLoading({
-      title: '注册中...',
-    })
+    // wx.showLoading({
+    //   title: '注册中...',
+    // })
     
     // 发送注册请求
     wx.request({
-      url: 'https://your-api-server.com/api/register',
+      url: 'http://localhost:3000/api/register',
       method: 'POST',
       data: this.data.registerForm,
       success: (res) => {
