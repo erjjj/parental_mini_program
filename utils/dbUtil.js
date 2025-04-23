@@ -3,8 +3,8 @@ const dbConfig = require('../config/db');
 
 // 创建数据库连接池
 const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
+  host: '10.129.203.188',
+  user: 'wechat_user',
   password: '1234',
   database: 'test',
   port: 3306,

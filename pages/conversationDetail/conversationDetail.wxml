@@ -1,0 +1,69 @@
+<!-- pages/conversationDetail/conversationDetail.wxml -->
+<view class="container">
+  <!-- 智能体选择器 -->
+  <view class="agent-selector">
+    <view class="selector-title">选择智能体</view>
+    <scroll-view scroll-x class="agent-list">
+      <view 
+        class="agent-item {{selectedAgentId === item.agent_id ? 'selected' : ''}}" 
+        wx:for="{{agentList}}" 
+        wx:key="agent_id"
+        bindtap="changeAgent"
+        data-id="{{item.agent_id}}"
+      >
+        <view class="agent-avatar">
+          <image src="/images/default_avatar.png" mode="aspectFill"></image>
+        </view>
+        <view class="agent-name">{{item.name || '智能体 ' + item.agent_id}}</view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 对话历史记录 -->
+  <scroll-view 
+    scroll-y 
+    class="chat-container" 
+    enable-back-to-top 
+    scroll-into-view="{{scrollIntoView}}"
+  >
+    <view class="chat-list">
+      <block wx:if="{{chatHistory.length > 0}}">
+        <view 
+          wx:for="{{chatHistory}}" 
+          wx:key="id"
+          class="chat-item {{item.speaker === 'user' ? 'user' : 'ai'}}"
+        >
+          <view class="chat-time" wx:if="{{index === 0 || chatHistory[index].create_date - chatHistory[index-1].create_date > 300000}}">
+            {{formatTime(item.create_date)}}
+          </view>
+          <view class="chat-content">
+            <view class="chat-bubble">{{item.content}}</view>
+          </view>
+        </view>
+      </block>
+      <view class="empty-chat" wx:elif="{{!loading && !isLoggedIn}}">
+        <text>您尚未登录</text>
+        <button class="login-btn" bindtap="navigateToLogin">立即登录</button>
+      </view>
+      <view class="empty-chat" wx:elif="{{!loading && isLoggedIn && !hasBoundAgent}}">
+        <text>当前您未绑定任何智能体</text>
+      </view>
+      <view class="empty-chat" wx:elif="{{!loading && selectedAgentId}}">
+        <text>暂无对话记录</text>
+      </view>
+      <view class="empty-chat" wx:elif="{{!loading && !selectedAgentId}}">
+        <text>请选择一个智能体查看对话记录</text>
+      </view>
+    </view>
+    
+    <!-- 加载中提示 -->
+    <view class="loading" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+    
+    <!-- 没有更多数据提示 -->
+    <view class="no-more" wx:if="{{!hasMore && chatHistory.length > 0}}">
+      <text>没有更多记录了</text>
+    </view>
+  </scroll-view>
+</view>

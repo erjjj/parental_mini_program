@@ -1,0 +1,141 @@
+/* pages/conversationDetail/conversationDetail.wxss */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f1f1f1;
+}
+
+/* 智能体选择器样式 */
+.agent-selector {
+  background-color: #ffffff;
+  padding: 10rpx 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.selector-title {
+  font-size: 28rpx;
+  color: #666;
+  margin: 10rpx 0;
+}
+
+.agent-list {
+  white-space: nowrap;
+  padding: 10rpx 0;
+}
+
+.agent-item {
+  display: inline-block;
+  margin-right: 30rpx;
+  text-align: center;
+  width: 120rpx;
+}
+
+.agent-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 2rpx solid #eee;
+}
+
+.agent-avatar image {
+  width: 100%;
+  height: 100%;
+}
+
+.agent-name {
+  font-size: 24rpx;
+  color: #333;
+  margin-top: 10rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.agent-item.selected .agent-avatar {
+  border: 2rpx solid #07c160;
+}
+
+.agent-item.selected .agent-name {
+  color: #07c160;
+}
+
+/* 聊天记录样式 */
+.chat-container {
+  flex: 1;
+  padding: 20rpx;
+  box-sizing: border-box;
+}
+
+.chat-list {
+  padding-bottom: 20rpx;
+}
+
+.chat-item {
+  margin-bottom: 30rpx;
+  clear: both;
+}
+
+.chat-time {
+  text-align: center;
+  font-size: 24rpx;
+  color: #999;
+  margin: 20rpx 0;
+}
+
+.chat-content {
+  display: flex;
+  max-width: 80%;
+}
+
+.chat-bubble {
+  padding: 20rpx;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+/* 用户消息样式 */
+.chat-item.user .chat-content {
+  justify-content: flex-start;
+  margin-right: auto;
+}
+
+.chat-item.user .chat-bubble {
+  background-color: #ffffff;
+  color: #333;
+  border: 1rpx solid #e5e5e5;
+  border-top-left-radius: 0;
+}
+
+/* AI消息样式 */
+.chat-item.ai .chat-content {
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.chat-item.ai .chat-bubble {
+  background-color: #07c160;
+  color: #fff;
+  border-top-right-radius: 0;
+}
+
+/* 空状态提示 */
+.empty-chat {
+  text-align: center;
+  color: #999;
+  font-size: 28rpx;
+  margin-top: 200rpx;
+}
+
+/* 加载状态 */
+.loading, .no-more {
+  text-align: center;
+  color: #999;
+  font-size: 24rpx;
+  padding: 20rpx 0;
+}

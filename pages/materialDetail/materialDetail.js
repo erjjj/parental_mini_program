@@ -51,9 +51,9 @@ Page({
     })
     
     wx.request({
-      url: `https://your-api-server.com/api/materials/${id}`,
+      url: `http://localhost:3000/api/materials/${id}`,
       header: {
-        'Authorization': 'Bearer ' + app.globalData.token
+        'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
       },
       success: (res) => {
         if (res.data.success) {
@@ -80,9 +80,9 @@ Page({
   
   loadRelatedMaterials: function(id) {
     wx.request({
-      url: `https://your-api-server.com/api/materials/related/${id}`,
+      url: `http://localhost:3000/api/materials/related/${id}`,
       header: {
-        'Authorization': 'Bearer ' + app.globalData.token
+        'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
       },
       success: (res) => {
         if (res.data.success) {
@@ -185,13 +185,13 @@ Page({
     })
     
     wx.request({
-      url: 'https://your-api-server.com/api/ai/learn',
+      url: 'http://localhost:3000/api/ai/learn',
       method: 'POST',
       data: {
         materialId: this.data.material.id
       },
       header: {
-        'Authorization': 'Bearer ' + app.globalData.token,
+        'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')),
         'Content-Type': 'application/json'
       },
       success: (res) => {

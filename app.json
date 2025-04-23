@@ -5,7 +5,8 @@
     "pages/materials/materials",
     "pages/settings/settings",
     "pages/instructions/instructions",
-    "pages/childProfile/childProfile"
+    "pages/childProfile/childProfile",
+    "pages/conversationDetail/conversationDetail"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -41,14 +41,14 @@ Page({
     this.setData({ loading: true })
     
     wx.request({
-      url: 'https://your-api-server.com/api/materials',
+      url: 'http://localhost:3000/api/materials',
       data: {
         category: this.data.selectedCategory !== '全部' ? this.data.selectedCategory : '',
         keyword: this.data.searchKeyword,
         sortBy: this.data.sortOrder
       },
       header: {
-        'Authorization': 'Bearer ' + app.globalData.token
+        'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
       },
       success: (res) => {
         if (res.data.success) {
@@ -75,7 +75,7 @@ Page({
   
   loadOfficialMaterials: function() {
     wx.request({
-      url: 'https://your-api-server.com/api/official-materials',
+      url: 'http://localhost:3000/api/official-materials',
       data: {
         category: this.data.selectedCategory !== '全部' ? this.data.selectedCategory : '',
         limit: 10
@@ -258,7 +258,7 @@ Page({
     
     // 保存文本内容
     wx.request({
-      url: 'https://your-api-server.com/api/materials/text',
+      url: 'http://localhost:3000/api/materials/text',
       method: 'POST',
       data: {
         title: this.data.newMaterial.title,
@@ -266,7 +266,7 @@ Page({
         content: this.data.newMaterial.content
       },
       header: {
-        'Authorization': 'Bearer ' + app.globalData.token,
+        'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')),
         'Content-Type': 'application/json'
       },
       success: (result) => {
@@ -318,18 +318,18 @@ Page({
     
     // 先上传文件
     wx.uploadFile({
-      url: 'https://your-api-server.com/api/upload',
+      url: 'http://localhost:3000/api/upload',
       filePath: this.data.newMaterial.filePath,
       name: 'file',
       header: {
-        'Authorization': 'Bearer ' + app.globalData.token
+        'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
       },
       success: (res) => {
         const data = JSON.parse(res.data)
         if (data.success) {
           // 文件上传成功后，保存材料信息
           wx.request({
-            url: 'https://your-api-server.com/api/materials',
+            url: 'http://localhost:3000/api/materials',
             method: 'POST',
             data: {
               title: this.data.newMaterial.title,
@@ -340,7 +340,7 @@ Page({
               fileType: this.data.newMaterial.fileType
             },
             header: {
-              'Authorization': 'Bearer ' + app.globalData.token,
+              'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token')),
               'Content-Type': 'application/json'
             },
             success: (result) => {
@@ -386,10 +386,10 @@ Page({
       success: (res) => {
         if (res.confirm) {
           wx.request({
-            url: `https://your-api-server.com/api/materials/${id}`,
+            url: `http://localhost:3000/api/materials/${id}`,
             method: 'DELETE',
             header: {
-              'Authorization': 'Bearer ' + app.globalData.token
+              'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
             },
             success: (result) => {
               if (result.data.success) {
