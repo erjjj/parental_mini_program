@@ -9,6 +9,7 @@ Page({
     isLoggedIn: false,
     showLoginForm: false,
     showRegisterForm: false,
+    showFeedbackForm: false,
     loginForm: {
       username: '',
       password: ''
@@ -19,7 +20,12 @@ Page({
       confirmPassword: '',
       email: '',
       phone: ''
-    }
+    },
+    feedbackTypes: ['功能建议', '问题反馈', '内容建议', '其他'],
+    feedbackTypeIndex: 0,
+    feedbackContent: '',
+    feedbackContact: '',
+    cacheSize: '0.5MB'
   },
 
   onLoad: function (options) {
@@ -182,11 +188,17 @@ Page({
           // 登录成功，保存token
           wx.setStorageSync('token', res.data.token)
           app.globalData.token = res.data.token
-          app.globalData.userInfo = res.data.userInfo
+          
+          // 确保用户信息中包含头像，如果没有则使用默认头像
+          const userInfo = res.data.userInfo;
+          if (!userInfo.photo) {
+            userInfo.photo = '/images/chat.png';
+          }
+          app.globalData.userInfo = userInfo;
           
           this.setData({
             isLoggedIn: true,
-            userInfo: res.data.userInfo,
+            userInfo: userInfo,
             hasUserInfo: true,
             showLoginForm: false
           })
@@ -291,6 +303,7 @@ Page({
             isLoggedIn: false,
             userInfo: null,
             hasUserInfo: false
+            
           })
           
           wx.showToast({
@@ -304,14 +317,16 @@ Page({
   getUserProfile: function() {
     // 获取用户详细信息
     wx.request({
-      url: 'https://your-api-server.com/api/user/profile',
+      url: 'http://localhost:3000/api/user/profile',
       header: {
-        'Authorization': 'Bearer ' + app.globalData.token
+        'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
       },
       success: (res) => {
         if (res.data.success) {
           this.setData({
-            userInfo: res.data.userInfo
+            userInfo: res.data.userInfo,
+            hasUserInfo: true,
+            isLoggedIn: true
           })
           app.globalData.userInfo = res.data.userInfo
         }
@@ -332,9 +347,124 @@ Page({
     })
   },
   
-  navigateToFeedback: function() {
+  showFeedbackForm: function() {
+    this.setData({
+      showFeedbackForm: true
+    })
+  },
+  
+  hideFeedbackForm: function() {
+    this.setData({
+      showFeedbackForm: false
+    })
+  },
+  
+  bindFeedbackTypeChange: function(e) {
+    this.setData({
+      feedbackTypeIndex: e.detail.value
+    })
+  },
+  
+  inputFeedbackContent: function(e) {
+    this.setData({
+      feedbackContent: e.detail.value
+    })
+  },
+  
+  inputFeedbackContact: function(e) {
+    this.setData({
+      feedbackContact: e.detail.value
+    })
+  },
+  
+  submitFeedback: function() {
+    if (!this.data.feedbackContent) {
+      wx.showToast({
+        title: '请输入反馈内容',
+        icon: 'none'
+      })
+      return
+    }
+    
+    wx.showLoading({
+      title: '提交中...'
+    })
+    
+    // 模拟提交反馈
+    setTimeout(() => {
+      wx.hideLoading()
+      wx.showToast({
+        title: '提交成功',
+        icon: 'success'
+      })
+      this.setData({
+        showFeedbackForm: false,
+        feedbackContent: '',
+        feedbackContact: '',
+        feedbackTypeIndex: 0
+      })
+    }, 1500)
+  },
+  
+  navigateToChildSettings: function() {
     wx.navigateTo({
-      url: '/pages/feedback/feedback',
+      url: '/pages/childProfile/childProfile',
+    })
+  },
+  
+  navigateToChildInterests: function() {
+    wx.navigateTo({
+      url: '/pages/childProfile/childProfile?tab=interests',
+    })
+  },
+  
+  navigateToChildLearning: function() {
+    wx.navigateTo({
+      url: '/pages/childProfile/childProfile?tab=learning',
+    })
+  },
+  
+  navigateToAIPersonality: function() {
+    wx.navigateTo({
+      url: '/pages/aiSettings/aiSettings?tab=personality',
+    })
+  },
+  
+  navigateToAIVoice: function() {
+    wx.navigateTo({
+      url: '/pages/aiSettings/aiSettings?tab=voice',
+    })
+  },
+  
+  navigateToAIResponse: function() {
+    wx.navigateTo({
+      url: '/pages/aiSettings/aiSettings?tab=response',
+    })
+  },
+  
+  clearCache: function() {
+    wx.showModal({
+      title: '提示',
+      content: '确定要清除缓存吗？',
+      success: (res) => {
+        if (res.confirm) {
+          wx.showLoading({
+            title: '清除中...'
+          })
+          
+          // 模拟清除缓存
+          setTimeout(() => {
+            wx.hideLoading()
+            wx.showToast({
+              title: '清除成功',
+              icon: 'success'
+            })
+            this.setData({
+              cacheSize: '0MB'
+            })
+          }, 1500)
+        }
+      }
     })
   }
 })

@@ -122,10 +122,10 @@
   border: none;
 }
 
-/* 设置列表样式 */
+/* 设置项列表样式 */
 .settings-list {
   width: 100%;
-  margin-top: 20rpx;
+  margin-top: 30rpx;
 }
 
 .settings-group {
@@ -151,6 +151,16 @@
   border-bottom: none;
 }
 
+.item-icon {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 20rpx;
+  font-size: 32rpx;
+}
+
 .item-label {
   flex: 1;
   font-size: 32rpx;
@@ -165,7 +175,30 @@
 
 .item-arrow {
   font-size: 32rpx;
-  color: #999;
+  color: #ccc;
+}
+
+/* 意见反馈表单样式 */
+.form-textarea {
+  width: 100%;
+  height: 200rpx;
+  border: 1px solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  background-color: #f9f9f9;
+}
+
+.picker {
+  width: 100%;
+  height: 80rpx;
+  border: 1px solid #e0e0e0;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  background-color: #f9f9f9;
+  display: flex;
+  align-items: center;
 }
 
 /* 弹窗样式 */

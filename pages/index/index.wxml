@@ -1,76 +1,103 @@
 <!-- pages/index/index.wxml -->
 <view class="container">
   <view class="header">
-    <view class="user-info">
-      <block wx:if="{{!hasUserInfo && canIUse}}">
-        <button open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
+    <view class="user-info-card" style="position: relative; left: -14rpx; top: -106rpx">
+      <block wx:if="{{!hasUserInfo}}">
+        <button class="login-btn" bindtap="navigateToLogin">登录/注册</button>
       </block>
       <block wx:else>
-        <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-        <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+        <view class="user-info-table">
+          <view class="user-info-row">
+            <view class="user-info-cell user-avatar-cell">
+              <image class="userinfo-avatar" src="{{userInfo.photo || '/images/chat.png'}}" mode="cover"></image>
+            </view>
+            <view class="user-info-cell">
+              <view class="info-item">
+                <text class="info-label">用户名：</text>
+                <text class="info-value">{{userInfo.name || userInfo.id}}</text>
+              </view>
+              <view class="info-item" wx:if="{{userInfo.email}}">
+                <text class="info-label">邮箱：</text>
+                <text class="info-value">{{userInfo.email}}</text>
+              </view>
+              <view class="info-item">
+                <text class="info-label">状态：</text>
+                <text class="info-value status-value {{aiStatus === '在线' ? 'online' : 'offline'}}">{{aiStatus}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
       </block>
     </view>
   </view>
   
-  <view class="child-info" wx:if="{{childInfo}}">
-    <view class="child-header">
-      <text class="child-name">{{childInfo.name}}</text>
-      <text class="child-age">{{childInfo.age}}岁</text>
-      <button class="edit-btn" bindtap="navigateToChildProfile">编辑</button>
+  <!-- 孩子信息已移至专门页面，通过快捷操作区域的按钮访问 -->
+  
+  <!-- 修改快捷操作区域，使用网格布局支持更多按钮 -->
+  <view class="quick-actions" style="width: 585rpx; display: flex; box-sizing: border-box; position: relative; left: 0rpx; top: -135rpx">
+    <!-- 第一排按钮 -->
+    <view class="action-row">
+      <view class="action-item" bindtap="navigateToChildProfile">
+        <view class="action-icon">👶</view>
+        <text class="action-text">孩子信息</text>
+      </view>
+      <view class="action-item" bindtap="navigateToConversations">
+        <view class="action-icon">📝</view>
+        <text class="action-text">对话记录</text>
+      </view>
+      <view class="action-item" bindtap="navigateToMaterials">
+        <view class="action-icon">📤</view>
+        <text class="action-text">学习材料</text>
+      </view>
+      <view class="action-item" bindtap="navigateToInstructions">
+        <view class="action-icon">📢</view>
+        <text class="action-text">发送指令</text>
+      </view>
     </view>
-    <view class="child-details">
-      <view class="detail-item">
-        <text class="label">英语水平:</text>
-        <text class="value">{{childInfo.englishLevel}}</text>
+    
+    <!-- 第二排按钮 -->
+    <view class="action-row">
+      <view class="action-item" bindtap="navigateToFeatureFive">
+        <view class="action-icon">🔍</view>
+        <text class="action-text">功能五</text>
       </view>
-      <view class="detail-item">
-        <text class="label">兴趣爱好:</text>
-        <text class="value">{{childInfo.interests}}</text>
+      <view class="action-item" bindtap="navigateToFeatureSix">
+        <view class="action-icon">📊</view>
+        <text class="action-text">功能六</text>
       </view>
-      <view class="detail-item">
-        <text class="label">学习时长:</text>
-        <text class="value">{{childInfo.learningTime}}分钟</text>
+      <view class="action-item" bindtap="navigateToFeatureSeven">
+        <view class="action-icon">📅</view>
+        <text class="action-text">功能七</text>
+      </view>
+      <view class="action-item" bindtap="navigateToMore">
+        <view class="action-icon">⋯</view>
+        <text class="action-text">其他</text>
       </view>
     </view>
   </view>
   
-  <view class="ai-status">
-    <text class="status-label">AI助手状态:</text>
-    <text class="status-value {{aiStatus === '在线' ? 'online' : 'offline'}}">{{aiStatus}}</text>
-  </view>
-  
-  <!-- 修改快捷操作区域，使按钮横向排列 -->
-  <view class="quick-actions">
-    <view class="action-item" bindtap="navigateToConversations">
-      <view class="action-icon">📝</view>
-      <text class="action-text">查看对话</text>
-    </view>
-    <view class="action-item" bindtap="navigateToMaterials">
-      <view class="action-icon">📤</view>
-      <text class="action-text">学习材料</text>
-    </view>
-    <view class="action-item" bindtap="navigateToInstructions">
-      <view class="action-icon">📢</view>
-      <text class="action-text">发送指令</text>
-    </view>
-  </view>
-  
-  <!-- 优化最近对话记录区域 -->
-  <view class="recent-conversations">
+  <!-- 最近对话记录区域 - 放置在底部 -->
+  <view class="recent-conversations" style="position: relative; left: -1rpx; top: 43rpx; height: 600rpx; display: flex; box-sizing: border-box">
     <view class="section-header">
       <text class="section-title">最近对话</text>
       <text class="view-all" bindtap="navigateToConversations">查看全部</text>
     </view>
-    <view class="conversation-container">
-      <block wx:if="{{recentConversations.length > 0}}">
-        <view class="conversation-item" wx:for="{{recentConversations}}" wx:key="id">
-          <view class="conversation-time">{{item.time}}</view>
-          <view class="conversation-preview">{{item.preview}}</view>
+    <scroll-view scroll-y class="chat-scroll-container">
+      <view class="chat-list">
+        <block wx:if="{{recentConversations.length > 0}}">
+          <view wx:for="{{recentConversations}}" wx:key="id" class="chat-item {{item.speaker === 'user' ? 'user' : 'ai'}}">
+            <view class="chat-time" wx:if="{{index === 0 || recentConversations[index].create_date - recentConversations[index-1].create_date > 300000}}">
+              {{formatTime(item.create_date)}}
+            </view>
+            <view class="chat-content">
+              <view class="chat-bubble {{item.speaker === 'user' ? 'user' : 'ai'}}">{{item.content || '无内容'}}</view>
+            </view>
+          </view>
+        </block>
+        <view class="empty-list" wx:else>
+          <text>暂无对话记录</text>
         </view>
-      </block>
-      <view class="empty-list" wx:else>
-        <text>暂无对话记录</text>
       </view>
-    </view>
+    </scroll-view>
   </view>
 </view>

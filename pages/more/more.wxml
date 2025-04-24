@@ -1,0 +1,41 @@
+<!-- pages/more/more.wxml -->
+<view class="container">
+  <view class="header">
+    <text class="title">更多功能</text>
+  </view>
+  
+  <view class="more-features">
+    <view class="feature-item" bindtap="navigateToFeature" data-feature="1">
+      <view class="feature-icon">🔄</view>
+      <text class="feature-text">更多功能1</text>
+    </view>
+    <view class="feature-item" bindtap="navigateToFeature" data-feature="2">
+      <view class="feature-icon">📊</view>
+      <text class="feature-text">更多功能2</text>
+    </view>
+    <view class="feature-item" bindtap="navigateToFeature" data-feature="3">
+      <view class="feature-icon">📈</view>
+      <text class="feature-text">更多功能3</text>
+    </view>
+    <view class="feature-item" bindtap="navigateToFeature" data-feature="4">
+      <view class="feature-icon">📱</view>
+      <text class="feature-text">更多功能4</text>
+    </view>
+    <view class="feature-item" bindtap="navigateToFeature" data-feature="5">
+      <view class="feature-icon">⚙️</view>
+      <text class="feature-text">更多功能5</text>
+    </view>
+    <view class="feature-item" bindtap="navigateToFeature" data-feature="6">
+      <view class="feature-icon">📝</view>
+      <text class="feature-text">更多功能6</text>
+    </view>
+    <view class="feature-item" bindtap="navigateToFeature" data-feature="7">
+      <view class="feature-icon">🔍</view>
+      <text class="feature-text">更多功能7</text>
+    </view>
+    <view class="feature-item" bindtap="navigateToFeature" data-feature="8">
+      <view class="feature-icon">📂</view>
+      <text class="feature-text">更多功能8</text>
+    </view>
+  </view>
+</view>

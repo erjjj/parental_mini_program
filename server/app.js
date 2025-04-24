@@ -63,7 +63,7 @@ const verifyToken = (req, res, next) => {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
     // console.log('req.headers.authorization:', req.headers['authorization']);
-    console.log('req.user:', req.user);
+    // console.log('req.user:', req.user);
     // console.log(req);
     next();
   } catch (err) {
@@ -93,10 +93,12 @@ app.post('/api/register', async (req, res) => {
     // 对密码进行加密
     //const hashedPassword = crypto.createHash('md5').update(password).digest('hex');
     
-    // 创建新用户
+    // 创建新用户，使用chat.png作为默认头像
     const userId = await dbUtil.insert('user_info', {
       id:id,
-      password: password
+      password: password,
+      name: '',
+      photo: '/images/chat.png'
     });
     
     // 生成token
@@ -105,7 +107,11 @@ app.post('/api/register', async (req, res) => {
     res.json({ 
       success: true, 
       token,
-      userInfo: { id: userId}
+      userInfo: { 
+        id: userId,
+        name: '',
+        photo: '/images/chat.png'
+      }
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -130,13 +136,24 @@ app.post('/api/login', async (req, res) => {
       return res.status(401).json({ success: false, message: '密码错误' });
     }
     
+    // 检查用户头像是否为空，如果为空则设置默认头像并更新数据库
+    if (!user.photo) {
+      const defaultPhoto = '/images/chat.png';
+      await dbUtil.update('user_info', { id: user.id }, { photo: defaultPhoto });
+      user.photo = defaultPhoto;
+    }
+    
     // 生成token
     const token = jwt.sign({ id: user.id}, JWT_SECRET, { expiresIn: '24h' });
     
     res.json({ 
       success: true, 
       token,
-      userInfo: { id: user.id }
+      userInfo: { 
+        id: user.id,
+        name: user.name || '',
+        photo: user.photo
+      }
     });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -149,6 +166,23 @@ app.get('/api/verify-token', verifyToken, (req, res) => {
   res.json({ success: true, user: req.user });
 });
 
+// 更新用户头像接口
+app.post('/api/user/update-photo', verifyToken, async (req, res) => {
+  try {
+    const { photo } = req.body;
+    
+    // 更新用户头像
+    await dbUtil.update('user_info', { id: req.user.id }, { photo });
+    
+    res.json({
+      success: true,
+      message: '头像更新成功'
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // 获取用户信息接口
 app.get('/api/user/profile', verifyToken, async (req, res) => {
   try {
@@ -156,14 +190,106 @@ app.get('/api/user/profile', verifyToken, async (req, res) => {
     if (!user) {
       return res.status(404).json({ success: false, message: '用户不存在' });
     }
+    
+    // 检查用户头像是否为空，如果为空则设置默认头像并更新数据库
+    if (!user.photo) {
+      const defaultPhoto = '/images/chat.png';
+      await dbUtil.update('user_info', { id: user.id }, { photo: defaultPhoto });
+      user.photo = defaultPhoto;
+    }
 
     res.json({
       success: true,
       userInfo: {
         id: user.id,
+        name: user.name || '',
+        photo: user.photo
       }
     });
   } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// 获取孩子信息接口
+app.get('/api/child/info', verifyToken, async (req, res) => {
+  try {
+    // 根据父母ID查询孩子信息
+    const childInfo = await dbUtil.findOne('child_info', { parent_id: req.user.id });
+    
+    if (childInfo) {
+      // 格式化返回数据，与前端对应
+      res.json({
+        success: true,
+        childInfo: {
+          name: childInfo.child_id.toString() || '',
+          age: childInfo.age.toString() || '',
+          englishLevel: childInfo.english_level.toString() || '',
+          interests: childInfo.hobby || ''
+        }
+      });
+    } else {
+      // 如果没有找到孩子信息，返回成功但没有数据
+      res.json({
+        success: true,
+        childInfo: null
+      });
+    }
+  } catch (error) {
+    console.error('获取孩子信息错误:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// 更新孩子信息接口
+app.post('/api/child/update', verifyToken, async (req, res) => {
+  try {
+    const { name, age,gender, englishLevel, interests } = req.body;
+    
+    // 检查是否已有孩子信息
+    const existingChild = await dbUtil.findOne('child_info', { parent_id: req.user.id });
+    
+    let childInfo;
+    if (existingChild) {
+      // 更新现有记录
+      await dbUtil.update('child_info', {
+        child_id: parseInt(name) || 0,
+        name: name || '',
+        sex: gender,  // 默认为空字符串
+        age: parseInt(age) || 0,
+        english_level: parseInt(englishLevel) || 0,
+        hobby: interests || ''
+      }, { parent_id: req.user.id });
+      
+      // 获取更新后的信息
+      childInfo = await dbUtil.findOne('child_info', { parent_id: req.user.id });
+    } else {
+      // 创建新记录
+      await dbUtil.insert('child_info', {
+        parent_id: req.user.id,
+        child_id: parseInt(name) || 0,
+        age: parseInt(age) || 0,
+        sex: gender,  // 默认为空字符串
+        english_level: parseInt(englishLevel) || 0,
+        hobby: interests || ''
+      });
+      
+      // 获取新创建的信息
+      childInfo = await dbUtil.findOne('child_info', { parent_id: req.user.id });
+    }
+    
+    // 返回格式化的孩子信息
+    res.json({
+      success: true,
+      childInfo: {
+        name: childInfo.child_id.toString() || '',
+        age: childInfo.age.toString() || '',
+        englishLevel: childInfo.english_level.toString() || '',
+        interests: childInfo.hobby || ''
+      }
+    });
+  } catch (error) {
+    console.error('更新孩子信息错误:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
@@ -306,6 +432,62 @@ app.get('/api/conversations', verifyToken, async (req, res) => {
     });
   } catch (error) {
     console.error('错误详情:', error); // 打印完整错误堆栈
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// 获取最近对话记录
+app.get('/api/conversations/recent', verifyToken, async (req, res) => {
+  try {
+    const { limit = 5 } = req.query;
+    
+    // 1. 获取最新的一条对话记录
+    const latestChatSql = `
+      SELECT h.*
+      FROM ai_chat_history h
+      JOIN agent_info a ON h.agent_id = a.agent_id
+      WHERE a.user_id = ?
+      ORDER BY h.create_date DESC
+      LIMIT 1
+    `;
+    
+    const latestChat = await query(latestChatSql, [req.user.id]);
+    console.log(latestChat);
+    if (latestChat.length === 0) {
+      return res.json({
+        success: true,
+        recentChats: [],
+        hasMore: false
+      });
+    }
+    
+    // 2. 获取该智能体的最近对话历史
+    const agentId = latestChat[0].agent_id;
+    
+    const recentChatsSql = `
+      SELECT h.*
+      FROM ai_chat_history h
+      JOIN agent_info a ON h.agent_id = a.agent_id
+      WHERE h.agent_id = ?
+      ORDER BY h.create_date
+      LIMIT ?
+    `;
+    
+    const recentChats = await query(recentChatsSql, [agentId, parseInt(limit)]);
+    
+    // 3. 查询是否有更多对话
+    const countSql = `SELECT COUNT(*) as total FROM ai_chat_history WHERE agent_id = ?`;
+    const countResult = await query(countSql, [agentId]);
+    const total = countResult[0].total;
+    
+    res.json({
+      success: true,
+      agentId: agentId,
+      recentChats: recentChats,
+      hasMore: total > recentChats.length
+    });
+  } catch (error) {
+    console.error('获取最近对话错误:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });

@@ -96,10 +96,14 @@ Page({
   
   loadConversations: function (callback) {
     this.setData({ loading: true })
-    console.log('loadConversations')
     // 如果未登录或未绑定智能体，不加载对话记录
     if (!this.data.isLoggedIn) {
-      this.setData({ loading: false })
+      this.setData({ 
+        loading: false, 
+        conversations: [],
+        groupedConversations: [],
+        hasMore: false
+      })
       if (callback) callback()
         console.log('未登录，不加载对话记录')
       return 
@@ -183,7 +187,7 @@ Page({
       }
       groups[conv.agent_id].push(conv);
     });
-
+    console.log(groups[1][0].create_date)
     // 将分组转换为数组并按智能体ID排序
     return Object.entries(groups)
       .sort(([agentIdA], [agentIdB]) => agentIdA - agentIdB)
@@ -191,6 +195,7 @@ Page({
         agentId: agentId,
         // 使用content作为最新消息预览，使用create_date作为日期
         latestMessage: convs.sort((a, b) => new Date(b.create_date) - new Date(a.create_date))[0].content || '无内容',
+      
         conversations: convs
       }));
   },

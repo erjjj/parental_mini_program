@@ -1,2 +1,95 @@
 <!--pages/instructions/instructions.wxml-->
-<text>pages/instructions/instructions.wxml</text>
+<view class="container">
+  <view class="header">
+    <view class="back-btn" bindtap="goBack">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="title">发送指令</text>
+  </view>
+  
+  <view class="instruction-container">
+    <view class="instruction-header">
+      <text class="instruction-title">选择指令类型</text>
+    </view>
+    
+    <view class="instruction-types">
+      <view class="type-item {{selectedType === 'learning' ? 'selected' : ''}}" bindtap="selectType" data-type="learning">
+        <view class="type-icon">📚</view>
+        <text class="type-name">学习指导</text>
+      </view>
+      <view class="type-item {{selectedType === 'conversation' ? 'selected' : ''}}" bindtap="selectType" data-type="conversation">
+        <view class="type-icon">💬</view>
+        <text class="type-name">对话练习</text>
+      </view>
+      <view class="type-item {{selectedType === 'story' ? 'selected' : ''}}" bindtap="selectType" data-type="story">
+        <view class="type-icon">📖</view>
+        <text class="type-name">故事创作</text>
+      </view>
+      <view class="type-item {{selectedType === 'game' ? 'selected' : ''}}" bindtap="selectType" data-type="game">
+        <view class="type-icon">🎮</view>
+        <text class="type-name">游戏互动</text>
+      </view>
+      <view class="type-item {{selectedType === 'custom' ? 'selected' : ''}}" bindtap="selectType" data-type="custom">
+        <view class="type-icon">✏️</view>
+        <text class="type-name">自定义</text>
+      </view>
+    </view>
+    
+    <view class="instruction-templates" wx:if="{{selectedType && selectedType !== 'custom'}}">
+      <view class="template-header">
+        <text class="template-title">选择模板</text>
+      </view>
+      <view class="template-list">
+        <view class="template-item" wx:for="{{templates}}" wx:key="id" bindtap="selectTemplate" data-id="{{item.id}}">
+          <view class="template-content">
+            <text class="template-name">{{item.name}}</text>
+            <text class="template-desc">{{item.description}}</text>
+          </view>
+          <view class="template-select {{selectedTemplateId === item.id ? 'selected' : ''}}">
+            <text class="select-icon" wx:if="{{selectedTemplateId === item.id}}">✓</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    
+    <view class="instruction-input">
+      <view class="input-header">
+        <text class="input-title">{{selectedType === 'custom' ? '输入自定义指令' : '编辑指令内容'}}</text>
+      </view>
+      <textarea class="instruction-textarea" placeholder="请输入指令内容..." value="{{instructionContent}}" bindinput="inputInstruction"></textarea>
+      
+      <view class="param-section" wx:if="{{selectedType && selectedType !== 'custom'}}">
+        <view class="param-header">
+          <text class="param-title">参数设置</text>
+        </view>
+        <view class="param-list">
+          <view class="param-item" wx:if="{{selectedType === 'learning' || selectedType === 'conversation'}}">
+            <text class="param-label">难度级别</text>
+            <picker bindchange="bindDifficultyChange" value="{{difficultyIndex}}" range="{{difficulties}}">
+              <view class="param-picker">
+                {{difficulties[difficultyIndex]}}
+              </view>
+            </picker>
+          </view>
+          <view class="param-item" wx:if="{{selectedType === 'story' || selectedType === 'game'}}">
+            <text class="param-label">主题</text>
+            <picker bindchange="bindThemeChange" value="{{themeIndex}}" range="{{themes}}">
+              <view class="param-picker">
+                {{themes[themeIndex]}}
+              </view>
+            </picker>
+          </view>
+          <view class="param-item">
+            <text class="param-label">时长(分钟)</text>
+            <slider bindchange="bindDurationChange" min="5" max="30" value="{{duration}}" show-value></slider>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="action-buttons">
+    <button class="btn cancel-btn" bindtap="cancel">取消</button>
+    <button class="btn send-btn" bindtap="sendInstruction">发送</button>
+  </view>
+</view>

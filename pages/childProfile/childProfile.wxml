@@ -1,2 +1,42 @@
 <!--pages/childProfile/childProfile.wxml-->
-<text>pages/childProfile/childProfile.wxml</text>
+<view class="container">
+  <view class="header">
+    <view class="back-btn" bindtap="goBack">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="title">孩子信息</text>
+  </view>
+  
+  <view class="form-container">
+    <view class="form-item">
+      <text class="label">姓名</text>
+      <input class="input" value="{{formData.name}}" bindinput="inputName" placeholder="请输入孩子姓名"/>
+    </view>
+    
+    <view class="form-item">
+      <text class="label">年龄</text>
+      <input class="input" type="number" value="{{formData.age}}" bindinput="inputAge" placeholder="请输入孩子年龄"/>
+    </view>
+    
+    <view class="form-item">
+      <text class="label">性别</text>
+      <picker bindchange="bindGenderChange" value="{{formData.gender}}" range="{{genderArray}}">
+        <view class="picker">
+          {{formData.gender || '请选择性别'}}
+        </view>
+      </picker>
+    </view>
+    
+    <view class="form-item">
+      <text class="label">英语水平</text>
+      <input class="input" value="{{formData.englishLevel}}" bindinput="inputEnglishLevel" placeholder="请输入孩子英语水平"/>
+    </view>
+    
+    <view class="form-item">
+      <text class="label">兴趣爱好</text>
+      <input class="input" value="{{formData.interests}}" bindinput="inputInterests" placeholder="请输入孩子兴趣爱好"/>
+    </view>
+  </view>
+  
+  <button class="save-btn" bindtap="saveChildInfo">保存</button>
+</view>

@@ -9,7 +9,6 @@
       <view class="agent-group" wx:for="{{groupedConversations}}" wx:key="agentId">
         <view class="agent-header">
           <text class="agent-id">智能体 {{item.agentId}}</text>
-          <text class="latest-message">{{item.latestMessage}}</text>
         </view>
         <view class="conversation-item" 
               wx:for="{{item.conversations}}" 
@@ -19,10 +18,9 @@
               data-id="{{conversation.agent_id}}">
           <view class="conversation-header">
             <text class="conversation-date">{{conversation.create_date}}</text>
-            <text class="conversation-name">{{conversation.agent_name || '智能体'}}</text>
           </view>
           <view class="conversation-content">
-            <text class="conversation-title">{{conversation.agent_desc || '对话 ' + index}}</text>
+            <text class="conversation-title">{{conversation.agent_desc || ''}}</text>
             <text class="conversation-preview">{{conversation.content || '无内容'}}</text>
           </view>
         </view>

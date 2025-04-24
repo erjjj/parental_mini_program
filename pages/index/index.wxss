@@ -9,19 +9,55 @@ page {
   overflow-y: hidden;
 }
 
-.userinfo {
+.user-info-card {
+  width: 100%;
+  background-color: #fff;
+  border-radius: 12rpx;
+  padding: 15rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  margin-bottom: 10rpx;
+  margin-top: -10rpx; /* 减少顶部空白 */
+}
+
+.user-info-table {
+  width: 100%;
+}
+
+.user-info-row {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: #aaa;
-  width: 80%;
+  width: 100%;
+}
+
+.user-info-cell {
+  padding: 10rpx;
+}
+
+.user-avatar-cell {
+  width: 150rpx;
+}
+
+.info-item {
+  display: flex;
+  margin-bottom: 6rpx;
+}
+
+.info-label {
+  color: #666;
+  width: 120rpx;
+  font-size: 28rpx;
+}
+
+.info-value {
+  color: #333;
+  font-size: 28rpx;
+  flex: 1;
 }
 
 .userinfo-avatar {
   overflow: hidden;
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
+  width: 120rpx;
+  height: 120rpx;
+  margin: 10rpx;
   border-radius: 50%;
 }
 
@@ -61,61 +97,167 @@ page {
   flex: 1;
 }
 
+/* 最近对话记录 */
+.recent-chats {
+  width: 100%;
+  margin-top: 20rpx;
+  background-color: #fff;
+  border-radius: 10rpx;
+  padding: 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.recent-chats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.recent-chats-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.view-more {
+  font-size: 28rpx;
+  color: #007aff;
+}
+
+.chat-scroll {
+  width: 100%;
+  white-space: nowrap;
+  height: 300rpx;
+}
+
+.chat-list {
+  padding: 10rpx 0;
+}
+
+.chat-item {
+  margin-bottom: 20rpx;
+}
+
+.chat-time {
+  font-size: 24rpx;
+  color: #999;
+  text-align: center;
+  margin-bottom: 10rpx;
+}
+
+.chat-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-bubble {
+  max-width: 80%;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  margin-bottom: 10rpx;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+.chat-bubble.user {
+  background-color: #007aff;
+  color: #fff;
+  align-self: flex-end;
+  margin-left: auto;
+}
+
+.chat-bubble.ai {
+  background-color: #f1f1f1;
+  color: #333;
+  align-self: flex-start;
+}
+
 /* 快捷操作区域样式 */
 .quick-actions {
   display: flex;
-  justify-content: space-around;
-  padding: 30rpx 20rpx;
-  background-color: #ffffff;
-  margin: 20rpx 30rpx; /* 减小左右外边距 */
+  flex-direction: column;
+  margin: 20rpx 40rpx; /* 减小左右外边距，使按钮组合框与两侧的距离更近 */
+  background-color: #fff;
   border-radius: 12rpx;
-  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-  width: calc(100% - 60rpx); /* 确保宽度计算正确 */
-  box-sizing: border-box;
+  padding: 30rpx; /* 减小内边距 */
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.action-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 20rpx;
+}
+
+.action-row:last-child {
+  margin-bottom: 0;
+}
+
+/* 当按钮数量增加时自动调整网格布局 */
+@media (min-width: 768rpx) {
+  .quick-actions {
+    grid-template-columns: repeat(4, 1fr); /* 大屏幕保持4列 */
+  }
+}
+
+@media (max-width: 767rpx) {
+  .quick-actions {
+    grid-template-columns: repeat(4, 1fr); /* 中等屏幕4列 */
+  }
+}
+
+/* 当按钮数量达到8个时的布局 */
+.quick-actions.eight-buttons {
+  grid-template-columns: repeat(4, 1fr); /* 第一行4个 */
 }
 
 .action-item {
+  width: 24%; /* 增加宽度比例，使按钮更紧凑 */
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 33.33%;
+  padding: 12rpx 0; /* 减小上下内边距 */
 }
 
 .action-icon {
-  width: 100rpx; /* 增大图标尺寸 */
-  height: 100rpx;
+  width: 90rpx; /* 调整图标尺寸 */
+  height: 90rpx;
   background-color: #f0f7ff;
   border-radius: 12rpx;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10rpx;
-  font-size: 48rpx; /* 增大图标字体 */
+  margin-bottom: 6rpx;
+  font-size: 44rpx; /* 调整图标字体 */
 }
 
 .action-text {
-  font-size: 28rpx;
+  font-size: 24rpx;
   color: #333333;
+  text-align: center;
 }
 
 /* 最近对话记录区域样式 */
 .recent-conversations {
   background-color: #ffffff;
-  margin: 20rpx 30rpx; /* 减小左右外边距 */
-  padding: 30rpx; /* 增加内边距 */
+  margin: 10rpx 20rpx; /* 减小外边距 */
+  padding: 20rpx; /* 调整内边距 */
   border-radius: 12rpx;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-  width: calc(100% - 60rpx); /* 确保宽度计算正确 */
+  width: calc(100% - 40rpx); /* 确保宽度计算正确 */
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 20rpx;
-  border-bottom: 1rpx solid #f0f0f0;
-  margin-bottom: 10rpx; /* 添加底部间距 */
+  padding: 10rpx 20rpx;
+  margin-bottom: 15rpx;
 }
 
 .section-title {
@@ -129,30 +271,64 @@ page {
   color: #4A90E2;
 }
 
-.conversation-container {
-  min-height: 200rpx;
+.chat-scroll-container {
+  height: 400rpx;
+  width: 100%;
   position: relative;
 }
 
-.conversation-item {
-  padding: 20rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
+.chat-list {
+  padding-bottom: 20rpx;
 }
 
-.conversation-item:last-child {
-  border-bottom: none;
+.chat-item {
+  margin-bottom: 30rpx;
+  clear: both;
 }
 
-.conversation-time {
+.chat-time {
+  text-align: center;
   font-size: 24rpx;
-  color: #999999;
-  margin-bottom: 10rpx;
+  color: #999;
+  margin: 20rpx 0;
 }
 
-.conversation-preview {
+.chat-content {
+  display: flex;
+  max-width: 80%;
+}
+
+.chat-bubble {
+  padding: 20rpx;
+  border-radius: 10rpx;
   font-size: 28rpx;
-  color: #333333;
+  word-break: break-all;
   line-height: 1.5;
+}
+
+/* 用户消息样式 */
+.chat-item.user .chat-content {
+  justify-content: flex-start;
+  margin-right: auto;
+}
+
+.chat-bubble.user {
+  background-color: #ffffff;
+  color: #333;
+  border: 1rpx solid #e5e5e5;
+  border-top-left-radius: 0;
+}
+
+/* AI消息样式 */
+.chat-item.ai .chat-content {
+  justify-content: flex-end;
+  margin-left: auto;
+}
+
+.chat-bubble.ai {
+  background-color: #07c160;
+  color: #fff;
+  border-top-right-radius: 0;
 }
 
 .empty-list {
@@ -164,3 +340,6 @@ page {
   color: #999999;
   font-size: 28rpx;
 }
+
+/* 右上角孩子信息选项按钮样式 */
+/* 移除独立的孩子信息按钮样式，现在它与其他按钮并列 */

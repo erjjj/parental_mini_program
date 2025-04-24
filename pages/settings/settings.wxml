@@ -19,10 +19,10 @@
   <!-- 已登录状态 - 用户信息 -->
   <view class="user-info-section" wx:else>
     <view class="user-header">
-      <image class="user-avatar" src="{{userInfo.avatarUrl || '/images/default_avatar.png'}}"></image>
+      <image class="user-avatar" src="{{userInfo.photo || '/images/chat.png'}}"></image>
       <view class="user-details">
-        <text class="user-name">{{userInfo.nickName || userInfo.username}}</text>
-        <text class="user-id">ID: {{userInfo.userId || '未设置'}}</text>
+        <text class="user-name">{{userInfo.name || '未设置昵称'}}</text>
+        <text class="user-id">ID: {{userInfo.id || '未设置'}}</text>
         <text class="user-email">{{userInfo.email || '未设置邮箱'}}</text>
       </view>
     </view>
@@ -34,30 +34,64 @@
     <view class="settings-group">
       <view class="settings-group-title">账户设置</view>
       <view class="settings-item" wx:if="{{isLoggedIn}}" bindtap="navigateToProfile">
+        <view class="item-icon">👤</view>
         <text class="item-label">个人资料</text>
         <text class="item-arrow">></text>
       </view>
       <view class="settings-item" wx:if="{{isLoggedIn}}" bindtap="navigateToPassword">
+        <view class="item-icon">🔒</view>
         <text class="item-label">修改密码</text>
         <text class="item-arrow">></text>
       </view>
       <view class="settings-item" wx:if="{{isLoggedIn}}" bindtap="navigateToNotification">
+        <view class="item-icon">🔔</view>
         <text class="item-label">消息通知</text>
         <text class="item-arrow">></text>
       </view>
     </view>
     
     <view class="settings-group">
-      <view class="settings-group-title">应用设置</view>
+      <view class="settings-group-title">孩子信息设置</view>
       <view class="settings-item" bindtap="navigateToChildSettings">
-        <text class="item-label">孩子信息设置</text>
+        <view class="item-icon">👶</view>
+        <text class="item-label">基本信息</text>
         <text class="item-arrow">></text>
       </view>
-      <view class="settings-item" bindtap="navigateToAISettings">
-        <text class="item-label">AI助手设置</text>
+      <view class="settings-item" bindtap="navigateToChildInterests">
+        <view class="item-icon">🎯</view>
+        <text class="item-label">兴趣爱好</text>
         <text class="item-arrow">></text>
       </view>
-      <view class="settings-item">
+      <view class="settings-item" bindtap="navigateToChildLearning">
+        <view class="item-icon">📚</view>
+        <text class="item-label">学习进度</text>
+        <text class="item-arrow">></text>
+      </view>
+    </view>
+    
+    <view class="settings-group">
+      <view class="settings-group-title">AI助手设置</view>
+      <view class="settings-item" bindtap="navigateToAIPersonality">
+        <view class="item-icon">🤖</view>
+        <text class="item-label">助手个性</text>
+        <text class="item-arrow">></text>
+      </view>
+      <view class="settings-item" bindtap="navigateToAIVoice">
+        <view class="item-icon">🔊</view>
+        <text class="item-label">语音设置</text>
+        <text class="item-arrow">></text>
+      </view>
+      <view class="settings-item" bindtap="navigateToAIResponse">
+        <view class="item-icon">💬</view>
+        <text class="item-label">回复风格</text>
+        <text class="item-arrow">></text>
+      </view>
+    </view>
+    
+    <view class="settings-group">
+      <view class="settings-group-title">应用设置</view>
+      <view class="settings-item" bindtap="clearCache">
+        <view class="item-icon">🗑️</view>
         <text class="item-label">清除缓存</text>
         <text class="item-value">{{cacheSize || '0MB'}}</text>
         <text class="item-arrow">></text>
@@ -67,18 +101,22 @@
     <view class="settings-group">
       <view class="settings-group-title">关于</view>
       <view class="settings-item" bindtap="navigateToAbout">
+        <view class="item-icon">ℹ️</view>
         <text class="item-label">关于我们</text>
         <text class="item-arrow">></text>
       </view>
       <view class="settings-item" bindtap="navigateToHelp">
+        <view class="item-icon">❓</view>
         <text class="item-label">使用帮助</text>
         <text class="item-arrow">></text>
       </view>
-      <view class="settings-item" bindtap="navigateToFeedback">
+      <view class="settings-item" bindtap="showFeedbackForm">
+        <view class="item-icon">📝</view>
         <text class="item-label">意见反馈</text>
         <text class="item-arrow">></text>
       </view>
       <view class="settings-item">
+        <view class="item-icon">📱</view>
         <text class="item-label">当前版本</text>
         <text class="item-value">v1.0.0</text>
       </view>

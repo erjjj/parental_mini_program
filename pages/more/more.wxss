@@ -1,0 +1,51 @@
+/* pages/more/more.wxss */
+.container {
+  padding: 20rpx;
+  background-color: #f6f6f6;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 0;
+  margin-bottom: 30rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.more-features {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  padding: 10rpx;
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 30rpx 20rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+  height: 180rpx;
+}
+
+.feature-icon {
+  font-size: 48rpx;
+  margin-bottom: 15rpx;
+}
+
+.feature-text {
+  font-size: 28rpx;
+  color: #333;
+  text-align: center;
+}
