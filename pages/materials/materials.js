@@ -41,7 +41,7 @@ Page({
     this.setData({ loading: true })
     
     wx.request({
-      url: 'http://localhost:3000/api/materials',
+      url: 'https://www.myia.fun/api/materials',
       data: {
         category: this.data.selectedCategory !== '全部' ? this.data.selectedCategory : '',
         keyword: this.data.searchKeyword,
@@ -75,7 +75,7 @@ Page({
   
   loadOfficialMaterials: function() {
     wx.request({
-      url: 'http://localhost:3000/api/official-materials',
+      url: 'https://www.myia.fun/api/official-materials',
       data: {
         category: this.data.selectedCategory !== '全部' ? this.data.selectedCategory : '',
         limit: 10
@@ -258,7 +258,7 @@ Page({
     
     // 保存文本内容
     wx.request({
-      url: 'http://localhost:3000/api/materials/text',
+      url: 'https://www.myia.fun/api/materials/text',
       method: 'POST',
       data: {
         title: this.data.newMaterial.title,
@@ -318,7 +318,7 @@ Page({
     
     // 先上传文件
     wx.uploadFile({
-      url: 'http://localhost:3000/api/upload',
+      url: 'https://www.myia.fun/api/upload',
       filePath: this.data.newMaterial.filePath,
       name: 'file',
       header: {
@@ -329,7 +329,7 @@ Page({
         if (data.success) {
           // 文件上传成功后，保存材料信息
           wx.request({
-            url: 'http://localhost:3000/api/materials',
+            url: 'https://www.myia.fun/api/materials',
             method: 'POST',
             data: {
               title: this.data.newMaterial.title,
@@ -386,7 +386,7 @@ Page({
       success: (res) => {
         if (res.confirm) {
           wx.request({
-            url: `http://localhost:3000/api/materials/${id}`,
+            url: `https://www.myia.fun/api/materials/${id}`,
             method: 'DELETE',
             header: {
               'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))

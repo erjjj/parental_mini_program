@@ -53,7 +53,7 @@ Page({
     })
     
     wx.request({
-      url: 'http://localhost:3000/api/agents/user',
+      url: 'https://www.myia.fun/api/agents/user',
       header: {
         'Authorization': 'Bearer ' + wx.getStorageSync('token')
       },
@@ -119,7 +119,7 @@ Page({
     this.setData({ loading: true })
     
     wx.request({
-      url: 'http://localhost:3000/api/chat/history',
+      url: 'https://www.myia.fun/api/chat/history',
       data: {
         agent_id: this.data.selectedAgentId,
         page: this.data.page,
@@ -165,7 +165,7 @@ Page({
       })
       
       wx.request({
-        url: 'http://localhost:3000/api/chat/history',
+        url: 'https://www.myia.fun/api/chat/history',
         data: {
           agent_id: this.data.selectedAgentId,
           page: nextPage,

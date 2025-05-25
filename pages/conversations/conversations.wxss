@@ -1,57 +1,109 @@
 .container {
-  padding: 20rpx;
+  display: flex;
+  flex-direction: column;
+  box-sizing:border-box;
+  height:auto;
   background-color: #f5f5f5;
+  padding:0;
+  margin:0;
 }
 
-.header {
-  padding: 20rpx 0;
-  margin-bottom: 20rpx;
+/* 对话列表样式 */
+.conversation-list {
+  flex:1;
+  width: 95vw;
+  padding: 0 0rpx;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
-.title {
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #333;
-}
-
-.agent-group {
+/* 智能体选择器样式 */
+.agent-selector {
+  width: 95vw;
+  padding: 0rpx 0;
   background-color: #fff;
-  border-radius: 12rpx;
-  margin-bottom: 20rpx;
+  border-bottom: 1rpx solid #eee;
+}
+
+/* 功能按钮样式 */
+.button-group {
+  width: 95vw;
+  display: flex;
+  justify-content: center;
+  padding: 0rpx 0;
+  background-color: #fff;
+  border-top: 1rpx solid #eee;
+  gap:30rpx;
+}
+
+
+.agent-list {
+  white-space: nowrap;
+  padding: 0rpx 0;
+}
+
+.agent-item {
+  display: inline-block;
+  margin-right: 30rpx;
+  text-align: center;
+  width: 120rpx;
+}
+
+.agent-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin: 0 auto;
   overflow: hidden;
+  border: 2rpx solid #eee;
 }
 
-.agent-header {
-  padding: 20rpx;
-  background-color: #f8f8f8;
-  border-bottom: 1px solid #eee;
+.agent-avatar image {
+  width: 100%;
+  height: 100%;
 }
 
-.agent-id {
-  font-size: 28rpx;
-  color: #666;
-  font-weight: bold;
+.agent-name {
+  font-size: 24rpx;
+  color: #333;
+  margin-top: 10rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.latest-message {
-  font-size: 26rpx;
-  color: #999;
-  margin-top: 8rpx;
+.agent-item.selected .agent-avatar {
+  border: 2rpx solid #07c160;
 }
+
+.agent-item.selected .agent-name {
+  color: #07c160;
+}
+
+
 
 .conversation-item {
+  background-color: #fff;
+  border-radius: 12rpx;
+  margin-bottom: rpx;
   padding: 20rpx;
-  border-bottom: 1px solid #eee;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
 }
 
-.conversation-item:last-child {
-  border-bottom: none;
-}
-
-.conversation-header {
+.conversation-header-left {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 10rpx;
+  justify-content: space-flex;
+  margin-bottom: 15rpx;
+  padding-bottom: 10rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.conversation-header-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 15rpx;
+  padding-bottom: 10rpx;
+  border-bottom: 1rpx solid #f0f0f0;
 }
 
 .conversation-date {
@@ -59,35 +111,55 @@
   color: #999;
 }
 
-.conversation-duration {
-  font-size: 24rpx;
-  color: #666;
-}
-
 .conversation-content {
-  margin: 10rpx 0;
-}
-
-.conversation-title {
-  font-size: 28rpx;
-  color: #333;
-  margin-bottom: 8rpx;
-}
-
-.conversation-preview {
-  font-size: 26rpx;
-  color: #666;
-}
-
-.conversation-stats {
   display: flex;
-  gap: 20rpx;
-  margin-top: 10rpx;
+  flex-direction: column;
+  gap: 15rpx;
 }
 
-.stat-item {
-  font-size: 24rpx;
-  color: #999;
+.message-item {
+  display: flex;
+  margin-bottom: 10rpx;
+}
+
+.message-avatar {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.message-avatar image {
+  width: 100%;
+  height: 100%;
+}
+
+.message-bubble {
+  max-width: 70%;
+  padding: 15rpx 20rpx;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  word-break: break-all;
+  margin: 0 15rpx;
+}
+
+.message-item.user {
+  flex-direction: row;
+}
+
+.message-item.agent {
+  flex-direction: row-reverse;
+}
+
+.message-item.user .message-bubble {
+  background-color: #e6f7ff;
+  color: #333;
+}
+
+.message-item.agent .message-bubble {
+  background-color: #f0f0f0;
+  color: #333;
 }
 
 .empty-list {
@@ -98,6 +170,138 @@
 
 .loading, .no-more {
   text-align: center;
+  padding: 20rpx;
+  color: #999;
+  font-size: 24rpx;
+}
+
+
+.function-btn {
+  flex: 1;
+  height: 80rpx;
+  line-height: 80rpx;
+  text-align: center;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  margin: 0 15rpx;
+}
+
+.summary-btn {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.filter-btn {
+  background-color: #f0f0f0;
+  color: #666;
+}
+
+/* 弹窗样式 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 80%;
+  max-height: 80%;
+  background-color: #fff;
+  border-radius: 20rpx;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  padding: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1rpx solid #eee;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.close-btn {
+  font-size: 40rpx;
+  color: #999;
+  padding: 0 10rpx;
+}
+
+.modal-body {
+  padding: 30rpx;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.summary-text {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* 筛选弹窗样式 */
+.filter-item {
+  margin-bottom: 30rpx;
+}
+
+.filter-label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.filter-input {
+  width: 100%;
+  height: 80rpx;
+  border: 1rpx solid #eee;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.date-picker {
+  height: 80rpx;
+  line-height: 80rpx;
+  border: 1rpx solid #eee;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  margin: 10rpx 0;
+}
+
+.date-separator {
+  display: block;
+  text-align: center;
+  font-size: 50rpx;
+  color: #999;
+  margin: 10rpx 0;
+}
+
+.apply-filter-btn {
+  width: 100%;
+  height: 80rpx;
+  line-height: 80rpx;
+  background-color: #1890ff;
+  color: #fff;
+  border-radius: 40rpx;
+  font-size: 28rpx;
+  margin-top: 20rpx;
+
   padding: 20rpx;
   color: #999;
   font-size: 24rpx;

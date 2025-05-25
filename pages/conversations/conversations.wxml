@@ -1,27 +1,41 @@
 <!-- pages/conversations/conversations.wxml -->
 <view class="container">
-  <view class="header">
-    <text class="title">对话记录</text>
+  <!-- 智能体选择器 -->
+  <view class="agent-selector">
+    <scroll-view scroll-x class="agent-list">
+      <view 
+        class="agent-item {{selectedAgentId === item.agent_id ? 'selected' : ''}}" 
+        wx:for="{{agentList}}" 
+        wx:key="agent_id"
+        bindtap="changeAgent"
+        data-id="{{item.agent_id}}"
+      >
+        <view class="agent-avatar">
+          <image src="{{item.avatar || '/images/chat.png'}}" mode="aspectFill"></image>
+        </view>
+        <view class="agent-name">{{item.name || '智能体 ' + item.agent_id}}</view>
+      </view>
+    </scroll-view>
   </view>
   
+  <!-- 对话记录列表 -->
   <view class="conversation-list">
-    <block wx:if="{{groupedConversations.length > 0}}">
-      <view class="agent-group" wx:for="{{groupedConversations}}" wx:key="agentId">
-        <view class="agent-header">
-          <text class="agent-id">智能体 {{item.agentId}}</text>
+    <block wx:if="{{conversations.length > 0}}">
+      <view class="conversation-item" 
+            wx:for="{{conversations}}" 
+            wx:key="id" 
+            
+            bindtap="viewConversationDetail" 
+            data-id="{{item.id}}">
+        <view class="conversation-header-{{item.speaker==='ai'?'right':'left'}}">
+          <text class="conversation-date">{{item.create_date}}</text>
         </view>
-        <view class="conversation-item" 
-              wx:for="{{item.conversations}}" 
-              wx:for-item="conversation" 
-              wx:key="agent_id" 
-              bindtap="viewConversationDetail" 
-              data-id="{{conversation.agent_id}}">
-          <view class="conversation-header">
-            <text class="conversation-date">{{conversation.create_date}}</text>
-          </view>
-          <view class="conversation-content">
-            <text class="conversation-title">{{conversation.agent_desc || ''}}</text>
-            <text class="conversation-preview">{{conversation.content || '无内容'}}</text>
+        <view class="conversation-content">
+          <view class="message-item {{item.speaker==='user'?'user':'agent'}}">
+            <view class="message-avatar">
+              <image src="/images/chat.png" mode="aspectFill"></image>
+            </view>
+            <view class="message-bubble">{{item.content || '无内容'}}</view>
           </view>
         </view>
       </view>
@@ -29,7 +43,7 @@
     <view class="empty-list" wx:else>
       <block wx:if="{{!isLoggedIn}}">
         <text>您尚未登录</text>
-        <button class="login-btn" bindtap="navigateToLogin">立即登录</button>
+        <button class="login-btn" bindtap="navigateToLogin">登录/注册</button>
       </block>
       <block wx:elif="{{!hasBoundAgent}}">
         <text>当前您未绑定任何智能体</text>
@@ -40,11 +54,52 @@
     </view>
   </view>
   
-  <view class="loading" wx:if="{{loading}}">
-    <text>加载中...</text>
+  
+
+  
+  <!-- 功能按钮 -->
+  <view class="button-group">
+    <button class="function-btn summary-btn" bindtap="showSummary">对话总结</button>
+    <button class="function-btn filter-btn" bindtap="showFilter">筛选对话</button>
   </view>
   
-  <view class="no-more" wx:if="{{!hasMore && conversations.length > 0}}">
-    <text>没有更多记录了</text>
+  <!-- 对话总结弹窗 -->
+  <view class="modal summary-modal" wx:if="{{showSummaryModal}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">对话总结</text>
+        <view class="close-btn" bindtap="closeSummary">×</view>
+      </view>
+      <view class="modal-body">
+        <text class="summary-text">{{conversationSummary || '暂无总结内容'}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 筛选弹窗 -->
+  <view class="modal filter-modal" wx:if="{{showFilterModal}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">筛选对话</text>
+        <view class="close-btn" bindtap="closeFilter">×</view>
+      </view>
+      <view class="modal-body">
+        <view class="filter-item">
+          <text class="filter-label">关键词：</text>
+          <input class="filter-input" placeholder="请输入关键词" bindinput="onKeywordInput" value="{{filterKeyword}}"/>
+        </view>
+        <view class="filter-item">
+          <text class="filter-label">时间范围：</text>
+          <picker mode="date" bindchange="onStartDateChange" value="{{filterStartDate}}">
+            <view class="date-picker">{{filterStartDate || '开始日期'}}</view>
+          </picker>
+          <text class="date-separator">至</text>
+          <picker mode="date" bindchange="onEndDateChange" value="{{filterEndDate}}">
+            <view class="date-picker">{{filterEndDate || '结束日期'}}</view>
+          </picker>
+        </view>
+        <button class="apply-filter-btn" bindtap="applyFilter">应用筛选</button>
+      </view>
+    </view>
   </view>
 </view>

@@ -1,0 +1,55 @@
+<view class="agent-info">
+  <view class="header">
+    <image class="avatar" src="{{avatar}}"></image>
+    <text class="title">{{agentName}}</text>
+  </view>
+  
+  <view class="tags">
+    <view class="tag" wx:for="{{tags}}" wx:key="index">{{item}}</view>
+  </view>
+  
+  <view class="description">{{description}}</view>
+  
+  <view class="attributes">
+    <view class="attribute">
+      <text class="attribute-label">年龄</text>
+      <text class="attribute-value">{{age}}{{age ? '岁' : '未知'}}</text>
+    </view>
+    <view class="attribute">
+      <text class="attribute-label">性别</text>
+      <text class="attribute-value">{{gender || '未知'}}</text>
+    </view>
+  </view>
+  
+  <view class="story">
+    <text class="story-title">{{gender === '女' ? '她' : '他'}}的故事</text>
+    <text class="story-content">{{story || '暂无故事信息'}}</text>
+  </view>
+  
+  <view class="tag-select-btn" bindtap="showTagSelector">
+    <text>添加标签</text>
+  </view>
+
+  <view class="button-group">
+    <button class="back-btn" bindtap="navigateBack">返回</button>
+    <button class="choose-btn" bindtap="handleChoose">选择</button>
+  </view>
+
+  <!-- 标签选择弹窗 -->
+  <view class="tag-selector-modal" wx:if="{{showTagSelector}}">
+    <view class="tag-selector-content">
+      <view class="tag-list">
+        <view class="tag-item {{item.selected ? 'selected' : ''}}" 
+              wx:for="{{predefinedTags}}" 
+              wx:key="index"
+              bindtap="toggleTag" 
+              data-index="{{index}}">
+          <text>{{item.text}}</text>
+        </view>
+      </view>
+      <view class="tag-selector-buttons">
+        <button class="apply-btn" bindtap="applyTags">Apply</button>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,75 @@
+<!-- pages/agentManagement/agentManagement.wxml -->
+<view class="container">
+  <view class="header">
+    <view class="back-btn" bindtap="goBack">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="title">智能体管理</text>
+  </view>
+  
+  <!-- 智能体列表 -->
+  <view class="agent-list">
+    <view class="section-title">我的智能体</view>
+    
+    <!-- 无智能体时显示 -->
+    <view class="empty-list" wx:if="{{agentList.length === 0}}">
+      <image class="empty-icon" src="/images/empty_file.png"></image>
+      <text class="empty-text">暂无智能体</text>
+      <button class="add-btn" bindtap="createNewAgent">创建智能体</button>
+    </view>
+    
+    <!-- 智能体列表 -->
+    <view class="agent-items" wx:else>
+      <view class="agent-item" wx:for="{{agentList}}" wx:key="id">
+        <view class="agent-info">
+          <image class="agent-avatar" src="{{item.avatar || '/images/chat.png'}}"></image>
+          <view class="agent-details">
+            <text class="agent-name">{{item.name}}</text>
+            <text class="agent-description">{{item.description || '暂无描述'}}</text>
+            <text class="agent-id">ID: {{item.id}}</text>
+          </view>
+        </view>
+        <view class="agent-actions">
+          <button class="action-btn edit-btn" bindtap="editAgent" data-id="{{item.id}}">编辑</button>
+          <button class="action-btn delete-btn" bindtap="deleteAgent" data-id="{{item.id}}">删除</button>
+        </view>
+      </view>
+      
+      <button class="add-btn" bindtap="createNewAgent">创建智能体</button>
+    </view>
+  </view>
+  
+  <!-- 编辑智能体弹窗 -->
+  <view class="modal" wx:if="{{showEditModal}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">编辑智能体</text>
+        <text class="close-btn" bindtap="closeModal">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">智能体名称</text>
+          <input class="form-input" placeholder="请输入智能体名称" bindinput="inputAgentName" value="{{currentAgent.name}}"/>
+        </view>
+        <view class="form-item">
+          <text class="form-label">智能体描述</text>
+          <textarea class="form-textarea" placeholder="请输入智能体描述" bindinput="inputAgentDescription" value="{{currentAgent.description}}"></textarea>
+        </view>
+        <button class="confirm-btn" bindtap="confirmEditAgent">保存修改</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 删除确认弹窗 -->
+  <view class="modal" wx:if="{{showDeleteConfirm}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">删除智能体</text>
+        <text class="close-btn" bindtap="closeDeleteConfirm">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="confirm-message">确定要删除智能体"{{currentAgent.name}}"？此操作不可恢复。</view>
+      </view>
+    </view>
+  </view>
+</view>

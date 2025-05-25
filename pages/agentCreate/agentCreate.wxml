@@ -1,0 +1,164 @@
+<!--agentCreate.wxml-->
+<view class="container">
+  <view class="agent-create">
+    <!-- 头像设置 -->
+    <view class="avatar-section">
+      <view class="avatar-container" bindtap="chooseAvatar">
+        <image class="agent-avatar" src="{{agentInfo.avatar}}" mode="aspectFill" wx:if="{{agentInfo.avatar != ''}}" />
+        <view class="avatar-placeholder" wx:else>
+          <text class="plus-icon">+</text>
+          <text class="avatar-hint">点击设置Ta的容貌、形象</text>
+        </view>
+      </view>
+      <text class="avatar-tip">点击可从相册选择或拍照</text>
+    </view>
+
+    <!-- 分隔线 -->
+    <view class="divider"></view>
+    
+    <!-- 基本信息区域 -->
+    <view class="section-header">
+      <text class="section-icon">+</text>
+      <text class="section-title">基本信息</text>
+    </view>
+    
+    <!-- 名称设置 -->
+    <view class="setting-item">
+      <text class="setting-label">昵称 <text class="required">*</text></text>
+      <input class="setting-input" value="{{agentInfo.name}}" bindinput="onNameChange" placeholder="给你的智能体命名" />
+    </view>
+    
+    <!-- 性别设置 -->
+    <view class="setting-item">
+      <text class="setting-label">性别 <text class="required">*</text></text>
+      <view class="gender-selector">
+        <view class="gender-option {{agentInfo.gender === '男' ? 'selected' : ''}}" bindtap="selectGender" data-gender="男">
+          <text>男</text>
+        </view>
+        <view class="gender-option {{agentInfo.gender === '女' ? 'selected' : ''}}" bindtap="selectGender" data-gender="女">
+          <text>女</text>
+        </view>
+        <view class="gender-option {{agentInfo.gender === '其他' ? 'selected' : ''}}" bindtap="selectGender" data-gender="其他">
+          <text>其他</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 年龄设置 -->
+    <view class="setting-item">
+      <text class="setting-label">年龄 <text class="required">*</text></text>
+      <input class="setting-input" type="number" value="{{agentInfo.age}}" bindinput="onAgeChange" placeholder="请输入智能体年龄" />
+    </view>
+    
+    <view class="setting-item">
+      <view class="setting-row">
+        <text class="setting-label">智能体声音 <text class="required">*</text></text>
+        <view class="setting-action" bindtap="addVoice">
+          <text>添加音色</text>
+          <text class="arrow-icon">></text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 分隔线 -->
+    <view class="divider"></view>
+    
+    <!-- 智能体人设区域 -->
+    <view class="section-header">
+      <text class="section-icon">+</text>
+      <text class="section-title">智能体人设</text>
+    </view>
+    
+    <!-- 智能体设定 -->
+    <view class="setting-item">
+      <view class="setting-header">
+        <text class="setting-label">智能体设定 (决定回复效果) <text class="required">*</text></text>
+      </view>
+      <text class="setting-desc">决定智能体的对话效果，不对其他人展示</text>
+      <textarea class="setting-textarea" value="{{agentInfo.setting}}" bindinput="onSettingChange" placeholder="此处填写智能体的信息，其他用户无法看到。包括但不限于，智能体的人设、性格、身份、背景经历、聊天风格、与用户（主控）的关系等。" maxlength="500"></textarea>
+    </view>
+    
+    <!-- 标签设置 -->
+    <view class="setting-item">
+      <text class="setting-label">智能体标签 <text class="required">*</text></text>
+      <text class="setting-desc">选择或添加标签来描述智能体的特点</text>
+      <view class="tag-select-btn" bindtap="showTagSelector">
+        <text>添加标签</text>
+      </view>
+      <view class="selected-tags" wx:if="{{selectedTags.length > 0}}">
+        <view class="tag-item" wx:for="{{selectedTags}}" wx:key="index">
+          <text>{{item}}</text>
+          <text class="tag-remove" bindtap="removeTag" data-index="{{index}}">×</text>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 对外简介 -->
+    <view class="setting-item">
+      <view class="setting-header">
+        <text class="setting-label">对外简介 (不影响对话效果) <text class="required">*</text></text>
+      </view>
+      <text class="setting-desc">不影响对话效果，仅用于其他用户了解智能体</text>
+      <textarea class="setting-textarea" value="{{agentInfo.introduction}}" bindinput="onIntroductionChange" placeholder="在此处输入作者想说的话，及需要其他用户了解的智能体信息，如背景、身份、人设、与用户的关系等。" maxlength="300"></textarea>
+    </view>
+    
+    <!-- 开场白 -->
+    <view class="setting-item">
+      <text class="setting-label">开场白 <text class="required">*</text></text>
+      <textarea class="setting-textarea" value="{{agentInfo.greeting}}" bindinput="onGreetingChange" placeholder="会作为TA的第一句话开启聊天" maxlength="200"></textarea>
+    </view>
+    
+    <!-- 底部按钮区域 -->
+    <view class="bottom-buttons">
+      <button class="preview-btn" bindtap="previewAgent">预览</button>
+      <button class="create-btn" bindtap="createAgent">创建智能体</button>
+    </view>
+  </view>
+  
+  <!-- 标签选择弹窗 -->
+  <view class="tag-selector" wx:if="{{showTagSelector}}">
+    <view class="tag-selector-header">
+      <text>选择标签</text>
+      <view class="tag-actions">
+        <button bindtap="showCustomTagInput" class="btn-add">添加标签</button>
+        <button bindtap="cancelTagSelection" class="btn-cancel">取消</button>
+        <button bindtap="applyTags" class="btn-confirm">确定</button>
+      </view>
+    </view>
+
+    <!-- 自定义标签输入框 -->
+    <view class="custom-tag-input" wx:if="{{showCustomTagInput}}">
+      <input 
+        placeholder="输入新标签" 
+        value="{{customTag}}"
+        bindinput="onCustomTagInput"
+        focus="true"
+      />
+      <button bindtap="addCustomTag" class="btn-add-small">添加</button>
+    </view>
+
+    <!-- 标签列表 -->
+    <view class="tag-list">
+      <view wx:for="{{predefinedTags}}" wx:key="index" class="tag-item">
+        <view class="tag-content {{item.selected ? 'selected' : ''}}" bindtap="toggleTag" data-index="{{index}}">
+          <text>{{item.text}}</text>
+        </view>
+        <view class="tag-actions">
+          <text class="edit-icon" bindtap="editTag" data-index="{{index}}">✏️</text>
+          <text class="delete-icon" bindtap="deleteTag" data-index="{{index}}">❌</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 标签编辑框 -->
+    <view class="tag-edit-box" wx:if="{{editingTagIndex >= 0}}">
+      <input 
+        value="{{customTag}}"
+        bindinput="onCustomTagInput"
+        focus="true"
+      />
+      <button bindtap="saveTagEdit" class="btn-save">保存</button>
+    </view>
+  </view>
+
+</view>

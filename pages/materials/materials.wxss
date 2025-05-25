@@ -29,7 +29,7 @@
   align-items: center;
   padding: 20rpx 30rpx;
   margin-top: 80rpx;
-  margin-bottom: 0rpx
+  margin-bottom: 0rpx;
   background-color: #ffffff;
   width: 100%;
   box-sizing: border-box;
@@ -79,7 +79,7 @@
   white-space: nowrap;
   width: 100%;
   box-sizing: border-box;
-  margin-top: 0rpx
+  margin-top: 0rpx;
   border-top: none; /* 移除顶部边框 */
   margin-bottom: 20rpx;
   position: fixed; /* 固定定位 */

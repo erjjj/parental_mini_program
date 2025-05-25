@@ -51,7 +51,7 @@ Page({
     })
     
     wx.request({
-      url: `http://localhost:3000/api/materials/${id}`,
+      url: `https://www.myia.fun/api/materials/${id}`,
       header: {
         'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
       },
@@ -80,7 +80,7 @@ Page({
   
   loadRelatedMaterials: function(id) {
     wx.request({
-      url: `http://localhost:3000/api/materials/related/${id}`,
+      url: `https://www.myia.fun/api/materials/related/${id}`,
       header: {
         'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
       },
@@ -185,7 +185,7 @@ Page({
     })
     
     wx.request({
-      url: 'http://localhost:3000/api/ai/learn',
+      url: 'https://www.myia.fun/api/ai/learn',
       method: 'POST',
       data: {
         materialId: this.data.material.id

@@ -1,0 +1,79 @@
+<!--new_index.wxml-->
+<view class="container">
+  <!-- 顶部搜索和操作区域 -->
+  <view class="header">
+    <view class="search-dropdown">
+      <text class="search-icon">🔍</text>
+      <input class="search-input" placeholder="搜索智能体" bindinput="onSearchInput" />
+      <text class="dropdown-icon" bindtap="toggleDropdown">▼</text>
+      
+      <!-- 下拉菜单 -->
+      <view class="dropdown-menu" wx:if="{{showDropdown}}">
+        <view class="dropdown-item" wx:for="{{agentList}}" wx:key="id" bindtap="selectAgent" data-id="{{item.id}}">
+          <image class="dropdown-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+          <text class="dropdown-name">{{item.name}}</text>
+        </view>
+      </view>
+    </view>
+    
+    <image class="header-agent-avatar" src="{{currentAgent.avatar}}" mode="aspectFill"></image>
+    
+    <!-- 登录/注册按钮 -->
+    <view class="login-btn" bindtap="navigateToLogin" wx:if="{{loginBtnVisible}}">
+      <text>登录/注册</text>
+    </view>
+  </view>
+  
+  <!-- 智能体信息展示区域 -->
+  <view class="agent-info">
+    <view class="agent-info-content">
+      <text class="agent-name">{{currentAgent.name}}</text>
+      <scroll-view scroll-y class="agent-description-scroll">
+        <text class="agent-description">{{currentAgent.description}}</text>
+      </scroll-view>
+    </view>
+    
+    
+  </view>
+
+  <!-- 状态和操作按钮区域 -->
+  <view class="status-action-row">
+    <!-- 状态指示条 -->
+    <view class="status-bar">
+      <view class="status-icon" style="background-color: {{statusColor}}"></view>
+      <text class="status-text">{{statusText}}</text>
+    </view>
+    
+    <view class="settings-btn" bindtap="goToSettings">
+      <text class="settings-icon">⚙️</text>
+      <text>设置角色</text>
+    </view>
+    
+    <view class="add-agent" bindtap="addNewAgent">
+      <text class="add-icon">+</text>
+      <text>添加角色</text>
+    </view>
+  </view>
+
+
+  <!-- 音色选择列表 -->
+  <view class="voice-list-container">
+    <text class="voice-list-title">可选音色</text>
+    <scroll-view class="voice-scroll" scroll-y="true">
+      <view class="voice-item {{item.id === currentVoice.id ? 'active' : ''}}" 
+            wx:for="{{voiceList}}" 
+            wx:key="id"
+            bindtap="selectVoice"
+            data-id="{{item.id}}">
+        <image class="voice-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+        <view class="voice-info">
+          <text class="voice-name">{{item.name}}</text>
+          <text class="voice-description">{{item.description}}</text>
+        </view>
+        <view class="voice-play" catchtap="playVoiceSample" data-id="{{item.id}}">
+          <text class="play-icon">▶</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+</view>

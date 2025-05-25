@@ -10,6 +10,9 @@ Page({
     showLoginForm: false,
     showRegisterForm: false,
     showFeedbackForm: false,
+    wxLoginLoading: false,
+    deviceList: [], // 用户绑定的设备列表
+    agentList: [], // 用户创建的智能体列表
     loginForm: {
       username: '',
       password: ''
@@ -31,13 +34,15 @@ Page({
   onLoad: function (options) {
     // 检查是否已登录
     if (app.globalData.userInfo) {
+      
       this.setData({
         userInfo: app.globalData.userInfo,
         hasUserInfo: true,
         isLoggedIn: true
       })
-    } else if (this.data.canIUse) {
-      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+      console.log('man',this.data.userInfo.nickName);
+    } 
+    else if (this.data.canIUse) {
       app.userInfoReadyCallback = res => {
         this.setData({
           userInfo: res,
@@ -47,11 +52,52 @@ Page({
       }
     }
     
+    // 如果未登录，尝试自动微信登录
+    if (!app.globalData.userInfo && !wx.getStorageSync('token')) {
+      // 使用新的自动登录方法
+      this.autoWxLogin()
+    }
+    
+    // 如果传入showLogin参数，自动显示登录弹窗
+    if (options.showLogin) {
+      this.showLogin()
+    }
+    
     // 检查登录状态
     this.checkLoginStatus()
   },
   
   onShow: function() {
+    // 检查是否已登录
+    if (app.globalData.userInfo) {
+      
+      this.setData({
+        userInfo: app.globalData.userInfo,
+        hasUserInfo: true,
+        isLoggedIn: true
+      })
+      console.log('man',this.data.userInfo.nickName);
+    } else if (this.data.canIUse) {
+      app.userInfoReadyCallback = res => {
+        this.setData({
+          userInfo: res,
+          hasUserInfo: true
+        })
+        this.checkLoginStatus()
+      }
+    }
+    
+    // 如果未登录，尝试自动微信登录
+    if (!app.globalData.userInfo && !wx.getStorageSync('token')) {
+      // 使用新的自动登录方法
+      this.autoWxLogin()
+    }
+    
+    // // 如果传入showLogin参数，自动显示登录弹窗
+    // if (options.showLogin) {
+    //   this.showLogin()
+    // }
+
     // 页面显示时再次检查登录状态
     this.checkLoginStatus()
   },
@@ -62,7 +108,7 @@ Page({
     if (token) {
       // 验证token有效性
       wx.request({
-        url: 'http://localhost:3000/api/verify-token',
+        url: 'https://www.myia.fun/api/verify-token',
         header: {
           'Authorization': 'Bearer ' + token
         },
@@ -94,6 +140,27 @@ Page({
         isLoggedIn: false
       })
     }
+  },
+  
+  // 设备管理相关函数
+  navigateToDeviceManagement: function() {
+    wx.navigateTo({
+      url: '/pages/deviceManagement/deviceManagement',
+    })
+  },
+  
+  // 智能体管理相关函数
+  navigateToAgentManagement: function() {
+    wx.navigateTo({
+      url: '/pages/agentManagement/agentManagement',
+    })
+  },
+  
+  // 创建新智能体
+  createNewAgent: function() {
+    wx.navigateTo({
+      url: '/pages/agentCreate/agentCreate',
+    })
   },
   
   showLogin: function() {
@@ -180,7 +247,7 @@ Page({
     
     // 发送登录请求
     wx.request({
-      url: 'http://localhost:3000/api/login',
+      url: 'https://www.myia.fun/api/login',
       method: 'POST',
       data: {id: parseInt(this.data.loginForm.username), password: this.data.loginForm.password},
       success: (res) => {
@@ -249,7 +316,7 @@ Page({
     
     // 发送注册请求
     wx.request({
-      url: 'http://localhost:3000/api/register',
+      url: 'https://www.myia.fun/api/register',
       method: 'POST',
       data: this.data.registerForm,
       success: (res) => {
@@ -296,6 +363,7 @@ Page({
         if (res.confirm) {
           // 清除本地存储
           wx.removeStorageSync('token')
+          wx.removeStorageSync('wxUserInfo')
           app.globalData.token = null
           app.globalData.userInfo = null
           
@@ -314,21 +382,238 @@ Page({
     })
   },
   
+  // 微信一键登录
+  wxLogin: function(e) {
+    // 检查用户是否授权获取用户信息
+    if (e.detail.userInfo) {
+      this.setData({
+        wxLoginLoading: true
+      })
+      
+      // 保存用户信息
+      const userInfo = e.detail.userInfo
+      // 确保保存微信的头像和昵称信息
+      wx.setStorageSync('wxUserInfo', userInfo)
+      
+      // 调用微信登录接口获取code
+      wx.login({
+        success: res => {
+          if (res.code) {
+            // 发送code和用户信息到后台换取token
+            wx.request({
+              url: 'https://www.myia.fun/api/wx-login',
+              method: 'POST',
+              data: {
+                code: res.code,
+                userInfo: userInfo
+              },
+              success: (result) => {
+                if (result.data.success) {
+                  // 登录成功，保存token和用户信息
+                  wx.setStorageSync('token', result.data.token)
+                  app.globalData.token = result.data.token
+                  
+                  // 合并微信用户信息和后端返回的用户信息
+                  const combinedUserInfo = {
+                    ...result.data.userInfo,
+                    avatarUrl: userInfo.avatarUrl,
+                    nickName: userInfo.nickName
+                  }
+                  
+                  app.globalData.userInfo = combinedUserInfo
+                  
+                  this.setData({
+                    isLoggedIn: true,
+                    userInfo: combinedUserInfo,
+                    hasUserInfo: true,
+                    wxLoginLoading: false
+                  })
+                  
+                  wx.showToast({
+                    title: '登录成功',
+                    icon: 'success'
+                  })
+                } else {
+                  wx.showToast({
+                    title: result.data.message || '微信登录失败',
+                    icon: 'none'
+                  })
+                  this.setData({
+                    wxLoginLoading: false
+                  })
+                }
+              },
+              fail: () => {
+                wx.showToast({
+                  title: '网络错误，请重试',
+                  icon: 'none'
+                })
+                this.setData({
+                  wxLoginLoading: false
+                })
+              }
+            })
+          } else {
+            wx.showToast({
+              title: '微信登录失败',
+              icon: 'none'
+            })
+            this.setData({
+              wxLoginLoading: false
+            })
+          }
+        },
+        fail: () => {
+          wx.showToast({
+            title: '微信登录失败',
+            icon: 'none'
+          })
+          this.setData({
+            wxLoginLoading: false
+          })
+        }
+      })
+    } else {
+      wx.showToast({
+        title: '您拒绝了授权',
+        icon: 'none'
+      })
+    }
+  },
+  
+  // 自动微信登录（静默）
+  autoWxLogin: function() {
+    // 检查是否有保存的微信用户信息
+    const wxUserInfo = wx.getStorageSync('wxUserInfo')
+    
+    if (wxUserInfo) {
+      // 调用微信登录接口获取code
+      wx.login({
+        success: res => {
+          if (res.code) {
+            // 发送code和用户信息到后台换取token
+            wx.request({
+              url: 'https://www.myia.fun/api/wx-login',
+              method: 'POST',
+              data: {
+                code: res.code,
+                userInfo: wxUserInfo
+              },
+              success: (result) => {
+                if (result.data.success) {
+                  // 登录成功，保存token和用户信息
+                  wx.setStorageSync('token', result.data.token)
+                  app.globalData.token = result.data.token
+                  
+                  // 合并微信用户信息和后端返回的用户信息
+                  const combinedUserInfo = {
+                    ...result.data.userInfo,
+                    avatarUrl: wxUserInfo.avatarUrl,
+                    nickName: wxUserInfo.nickName
+                  }
+                  
+                  app.globalData.userInfo = combinedUserInfo
+                  
+                  this.setData({
+                    isLoggedIn: true,
+                    userInfo: combinedUserInfo,
+                    hasUserInfo: true
+                  })
+                }
+              }
+            })
+          }
+        }
+      })
+    } else {
+      // 如果没有用户信息，尝试获取用户授权
+      this.getUserProfileAndLogin()
+    }
+  },
+  
+  // 获取用户信息并登录
+  getUserProfileAndLogin: function() {
+    wx.getUserProfile({
+      desc: '用于完善用户资料', // 声明获取用户个人信息后的用途
+      success: (res) => {
+        const userInfo = res.userInfo
+        // 保存用户信息到本地
+        wx.setStorageSync('wxUserInfo', userInfo)
+        // 使用获取到的用户信息进行登录
+        wx.login({
+          success: loginRes => {
+            if (loginRes.code) {
+              wx.request({
+                url: 'https://www.myia.fun/api/wx-login',
+                method: 'POST',
+                data: {
+                  code: loginRes.code,
+                  userInfo: userInfo
+                },
+                success: (result) => {
+                  if (result.data.success) {
+                    // 登录成功，保存token和用户信息
+                    wx.setStorageSync('token', result.data.token)
+                    app.globalData.token = result.data.token
+                    
+                    // 合并微信用户信息和后端返回的用户信息
+                    const combinedUserInfo = {
+                      ...result.data.userInfo,
+                      avatarUrl: userInfo.avatarUrl,
+                      nickName: userInfo.nickName
+                    }
+                    
+                    app.globalData.userInfo = combinedUserInfo
+                    
+                    this.setData({
+                      isLoggedIn: true,
+                      userInfo: combinedUserInfo,
+                      hasUserInfo: true
+                    })
+                  }
+                }
+              })
+            }
+          }
+        })
+      },
+      fail: (err) => {
+        console.log('用户拒绝授权', err)
+        // 用户拒绝授权，不做处理，用户可以手动在设置页面登录
+      }
+    })
+  },
+  
   getUserProfile: function() {
     // 获取用户详细信息
     wx.request({
-      url: 'http://localhost:3000/api/user/profile',
+      url: 'https://www.myia.fun/api/user/profile',
       header: {
         'Authorization': 'Bearer ' + (app.globalData.token || wx.getStorageSync('token'))
       },
       success: (res) => {
         if (res.data.success) {
+          // 获取存储的微信用户信息
+          const wxUserInfo = wx.getStorageSync('wxUserInfo');
+          
+          // 合并后端返回的用户信息和微信用户信息
+          let userInfoData = res.data.userInfo;
+          
+          if (wxUserInfo) {
+            userInfoData = {
+              ...userInfoData,
+              avatarUrl: wxUserInfo.avatarUrl,
+              nickName: wxUserInfo.nickName
+            };
+          }
+          
           this.setData({
-            userInfo: res.data.userInfo,
+            userInfo: userInfoData,
             hasUserInfo: true,
             isLoggedIn: true
           })
-          app.globalData.userInfo = res.data.userInfo
+          
+          app.globalData.userInfo = userInfoData;
         }
       }
     })

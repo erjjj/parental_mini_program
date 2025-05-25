@@ -1,0 +1,246 @@
+/* pages/deviceManagement/deviceManagement.wxss */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  background-color: #4A90E2;
+  position: relative;
+}
+
+.back-btn {
+  padding: 10rpx;
+}
+
+.back-icon {
+  font-size: 40rpx;
+  color: #ffffff;
+}
+
+.title {
+  flex: 1;
+  text-align: center;
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #ffffff;
+  margin-right: 50rpx; /* 为了平衡左侧返回按钮的空间 */
+}
+
+/* 设备列表样式 */
+.device-list {
+  flex: 1;
+  padding: 30rpx;
+  overflow-y: auto;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.empty-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 30rpx;
+}
+
+.device-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.device-item {
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.device-info {
+  display: flex;
+  margin-bottom: 20rpx;
+}
+
+.device-icon {
+  font-size: 48rpx;
+  margin-right: 20rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.device-details {
+  flex: 1;
+}
+
+.device-name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.device-status {
+  font-size: 24rpx;
+  display: inline-block;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  margin-bottom: 10rpx;
+}
+
+.connected {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.disconnected {
+  background-color: #fff1f0;
+  color: #ff4d4f;
+}
+
+.device-id {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+}
+
+.device-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20rpx;
+}
+
+.action-btn {
+  font-size: 24rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 30rpx;
+  min-width: 160rpx;
+}
+
+.connect-btn {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  border: 1rpx solid #1890ff;
+}
+
+.disconnect-btn {
+  background-color: #f0f0f0;
+  color: #666;
+  border: 1rpx solid #d9d9d9;
+}
+
+.delete-btn {
+  background-color: #fff1f0;
+  color: #ff4d4f;
+  border: 1rpx solid #ff4d4f;
+}
+
+.add-btn {
+  margin-top: 30rpx;
+  background-color: #4A90E2;
+  color: #ffffff;
+  font-size: 28rpx;
+  padding: 15rpx 0;
+  border-radius: 8rpx;
+  width: 100%;
+}
+
+/* 弹窗样式 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 80%;
+  background-color: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1rpx solid #eee;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.close-btn {
+  font-size: 40rpx;
+  color: #999;
+  padding: 0 10rpx;
+}
+
+.modal-body {
+  padding: 30rpx;
+}
+
+.form-item {
+  margin-bottom: 20rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  border: 1rpx solid #eee;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.confirm-btn {
+  margin-top: 30rpx;
+  background-color: #4A90E2;
+  color: #ffffff;
+  font-size: 28rpx;
+  padding: 15rpx 0;
+  border-radius: 8rpx;
+  width: 100%;
+}

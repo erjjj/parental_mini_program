@@ -1,0 +1,65 @@
+<!-- pages/deviceManagement/deviceManagement.wxml -->
+<view class="container">
+  <view class="header">
+    <view class="back-btn" bindtap="goBack">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="title">设备管理</text>
+  </view>
+  
+  <!-- 设备列表 -->
+  <view class="device-list">
+    <view class="section-title">已绑定设备</view>
+    
+    <!-- 无设备时显示 -->
+    <view class="empty-list" wx:if="{{deviceList.length === 0}}">
+      <image class="empty-icon" src="/images/empty_file.png"></image>
+      <text class="empty-text">暂无绑定设备</text>
+      <button class="add-btn" bindtap="addDevice">添加设备</button>
+    </view>
+    
+    <!-- 设备列表 -->
+    <view class="device-items" wx:else>
+      <view class="device-item" wx:for="{{deviceList}}" wx:key="id">
+        <view class="device-info">
+          <view class="device-icon">{{item.icon || '📱'}}</view>
+          <view class="device-details">
+            <text class="device-name">{{item.name}}</text>
+            <text class="device-status {{item.isConnected ? 'connected' : 'disconnected'}}">{{item.isConnected ? '已连接' : '未连接'}}</text>
+            <text class="device-id">设备ID: {{item.id}}</text>
+          </view>
+        </view>
+        <view class="device-actions">
+          <button class="action-btn {{item.isConnected ? 'disconnect-btn' : 'connect-btn'}}" 
+                  bindtap="toggleConnection" data-id="{{item.id}}" data-status="{{item.isConnected}}">
+            {{item.isConnected ? '断开连接' : '连接'}}
+          </button>
+          <button class="action-btn delete-btn" bindtap="unbindDevice" data-id="{{item.id}}">解除绑定</button>
+        </view>
+      </view>
+      
+      <button class="add-btn" bindtap="addDevice">添加设备</button>
+    </view>
+  </view>
+  
+  <!-- 添加设备弹窗 -->
+  <view class="modal" wx:if="{{showAddDeviceModal}}">
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">添加设备</text>
+        <text class="close-btn" bindtap="closeModal">×</text>
+      </view>
+      <view class="modal-body">
+        <view class="form-item">
+          <text class="form-label">设备ID</text>
+          <input class="form-input" placeholder="请输入设备ID" bindinput="inputDeviceId" value="{{newDevice.id}}"/>
+        </view>
+        <view class="form-item">
+          <text class="form-label">设备名称</text>
+          <input class="form-input" placeholder="请输入设备名称" bindinput="inputDeviceName" value="{{newDevice.name}}"/>
+        </view>
+        <button class="confirm-btn" bindtap="confirmAddDevice">确认添加</button>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,30 @@
+<!--new_agent.wxml-->
+<view class="container">
+  <view class="header">
+    <view class="back-btn" bindtap="navigateBack">
+      <text class="back-icon">←</text>
+    </view>
+    <text class="title">选择角色形象</text>
+  </view>
+  
+  <!-- 智能体列表 -->
+  <view class="agent-list">
+    <view class="agent-item {{item.id === selectedAgentId ? 'selected' : ''}}" 
+          wx:for="{{agentList}}" 
+          wx:key="id"
+          bindtap="selectAgent"
+          data-id="{{item.id}}">
+      <image class="agent-avatar" src="{{item.avatar}}" mode="aspectFill"></image>
+      <view class="agent-info">
+        <text class="agent-name">{{item.name}}</text>
+        <text class="agent-description">{{item.description}}</text>
+      </view>
+    </view>
+  </view>
+  
+  
+  <view class="create-agent-btn" bindtap="createNewAgent">
+    <text class="add-icon">+</text>
+    <text>创建一个角色</text>
+  </view>
+</view>

@@ -1,6 +1,11 @@
 {
   "pages": [
+    "pages/child_info/child_info",
+    "pages/new_index/new_index",
+    "pages/report_push/report_push",
+    "pages/child_report/child_report",
     "pages/index/index",
+    "pages/new_agent/new_agent",
     "pages/logs/logs",
     "pages/settings/settings",
     "pages/conversations/conversations",
@@ -10,7 +15,10 @@
     "pages/materialDetail/materialDetail",
     "pages/childProfile/childProfile",
     "pages/aiExplain/aiExplain",
-    "pages/more/more"
+    "pages/more/more",
+    "pages/agentSettings/agentSettings",
+    "pages/agentCreate/agentCreate",
+    "pages/agent_info"
   ],
   "window": {
     "backgroundTextStyle": "light",
@@ -24,16 +32,16 @@
     "backgroundColor": "#ffffff",
     "list": [
       {
-        "pagePath": "pages/index/index",
+        "pagePath":  "pages/child_info/child_info",
         "text": "首页",
         "iconPath": "images/home.png",
         "selectedIconPath": "images/home.png"
       },
       {
-        "pagePath": "pages/conversations/conversations",
-        "text": "对话记录",
-        "iconPath": "images/chat.png",
-        "selectedIconPath": "images/chat.png"
+        "pagePath": "pages/report_push/report_push",
+        "text": "成长报告",
+        "iconPath": "images/conversation_icon.png",
+        "selectedIconPath": "images/conversation_icon.png"
       },
       {
         "pagePath": "pages/materials/materials",

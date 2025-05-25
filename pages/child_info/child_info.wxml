@@ -1,0 +1,154 @@
+<!--pages/child_info/child_info.wxml-->
+<view class="container">
+  <!-- 用户信息顶部条 -->
+  <view class="user-info-bar">
+    <block wx:if="{{isLoggedIn}}">
+      <view class="user-nickname">{{userInfo.nickname || '梓涵妈妈'}}</view>
+      <image class="user-avatar" src="{{userInfo.avatar || '/images/default_avatar.png'}}" mode="aspectFill"></image>
+    </block>
+    <block wx:else>
+      <view class="login-btn" bindtap="login">点击登录</view>
+    </block>
+  </view>
+  
+  <!-- 孩子信息展示区 -->
+  <view class="child-info-container">
+    <view class="child-avatar-container">
+      <image class="child-avatar" src="{{childInfo.avatar || '/images/default_avatar.png'}}" mode="aspectFill" bindtap="chooseAndUploadAvatar"></image>
+      <view class="avatar-upload-btn" bindtap="chooseAndUploadAvatar">更换头像</view>
+    </view>
+    
+    <view class="edit-profile-btn" bindtap="navigateToChildProfile">编辑资料</view>
+    
+    <view class="child-details">
+      <view class="child-detail-item" bindtap="startEdit" data-field="name">
+        <text class="detail-label">姓名：</text>
+        <block wx:if="{{isEditing && editingField === 'name'}}">
+          <input class="detail-input" value="{{childInfo.name}}" focus="true" bindblur="saveEdit" data-field="name"/>
+        </block>
+        <block wx:else>
+          <text class="detail-value">{{childInfo.name || '王梓涵'}}</text>
+        </block>
+      </view>
+      
+      <view class="child-detail-item" bindtap="startEdit" data-field="age">
+        <text class="detail-label">年龄：</text>
+        <block wx:if="{{isEditing && editingField === 'age'}}">
+          <input class="detail-input" type="number" value="{{childInfo.age}}" focus="true" bindblur="saveEdit" data-field="age"/>
+        </block>
+        <block wx:else>
+          <text class="detail-value">{{childInfo.age || '4'}} 岁</text>
+        </block>
+      </view>
+      
+      <view class="child-detail-item" bindtap="startEdit" data-field="gender">
+        <text class="detail-label">性别：</text>
+        <block wx:if="{{isEditing && editingField === 'gender'}}">
+          <input class="detail-input" value="{{childInfo.gender}}" focus="true" bindblur="saveEdit" data-field="gender"/>
+        </block>
+        <block wx:else>
+          <text class="detail-value">{{childInfo.gender || '男'}}</text>
+        </block>
+      </view>
+      
+      <view class="child-detail-item" bindtap="startEdit" data-field="englishLevel">
+        <text class="detail-label">英语评级：</text>
+        <block wx:if="{{isEditing && editingField === 'englishLevel'}}">
+          <input class="detail-input" value="{{childInfo.englishLevel}}" focus="true" bindblur="saveEdit" data-field="englishLevel"/>
+        </block>
+        <block wx:else>
+          <text class="detail-value">{{childInfo.englishLevel || 'A1'}}</text>
+        </block>
+      </view>
+      
+      <view class="child-detail-item" bindtap="startEdit" data-field="description">
+        <text class="detail-label">孩子描述：</text>
+        <block wx:if="{{isEditing && editingField === 'description'}}">
+          <textarea class="detail-textarea" value="{{childInfo.description}}" focus="true" bindblur="saveEdit" data-field="description"></textarea>
+        </block>
+        <block wx:else>
+          <text class="detail-value">{{childInfo.description || '王梓涵，四岁小男孩，活泼可爱，充满好奇心。喜欢恐龙、积木和讲故事，总爱问“为什么”。笑容灿烂，爱交朋友，是个阳光又机灵的小小探险家。'}}</text>
+        </block>
+      </view>
+      
+      <view class="child-detail-item">
+        <text class="detail-label">语言：</text>
+        <view class="language-switch">
+          <view class="language-option {{currentLanguage === 'zh' ? 'selected' : ''}}" bindtap="switchLanguage" data-lang="zh">中文</view>
+          <view class="language-option {{currentLanguage === 'en' ? 'selected' : ''}}" bindtap="switchLanguage" data-lang="en">英文</view>
+        </view>
+      </view>
+    </view>
+    
+    <!-- 标签区域 -->
+    <view class="tags-section">
+      <text class="section-title">兴趣标签</text>
+      <view class="tags-container">
+        <view class="tag-item {{item.selected ? 'selected' : ''}}" 
+              wx:for="{{childTags}}" 
+              wx:key="index"
+              bindtap="toggleTag"
+              data-index="{{index}}">
+          <text>{{item.text}}</text>
+        </view>
+      </view>
+      <view class="tag-select-btn" bindtap="showTagSelector">
+        <text>添加标签</text>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 智能体切换按钮 -->
+  <view class="agent-switch-btn" bindtap="navigateToAgent">
+    <text>切换到智能体</text>
+  </view>
+  
+  <!-- 设备匹配按钮 -->
+  <view class="device-match-btn" bindtap="showDeviceMatchModal">
+    <text>匹配设备</text>
+  </view>
+</view>
+
+<!-- 标签选择器弹窗 -->
+<view class="tag-selector-modal" wx:if="{{showTagSelector}}">
+  <view class="tag-selector-content">
+    <view class="tag-selector-header">
+      <text class="tag-selector-title">选择标签</text>
+      <text class="tag-selector-close" bindtap="hideTagSelector">×</text>
+    </view>
+    <view class="tag-selector-list">
+      <view class="tag-selector-item {{item.selected ? 'selected' : ''}}" 
+            wx:for="{{predefinedTags}}" 
+            wx:key="index"
+            bindtap="selectTag"
+            data-index="{{index}}">
+        <text>{{item.text}}</text>
+      </view>
+    </view>
+    <view class="tag-selector-footer">
+      <button class="tag-confirm-btn" bindtap="confirmTagSelection">确认</button>
+    </view>
+  </view>
+</view>
+
+<!-- 设备匹配弹窗 -->
+<view class="device-match-modal" wx:if="{{showDeviceMatchModal}}">
+  <view class="device-match-content">
+    <view class="device-match-header">
+      <view class="device-match-icon">
+        <icon type="info" size="25" color="#4A90E2"></icon>
+      </view>
+      <text class="device-match-title">添加设备</text>
+    </view>
+    <view class="device-match-body">
+      <view class="form-item">
+        <text class="form-label">* 验证码：</text>
+        <input class="form-input" type="number" maxlength="6" placeholder="请输入6位数字验证码" bindinput="inputActivationCode" value="{{activationCode}}"/>
+      </view>
+    </view>
+    <view class="device-match-footer">
+      <button class="device-match-cancel-btn" bindtap="hideDeviceMatchModal">取消</button>
+      <button class="device-match-confirm-btn" bindtap="activateDevice">确定</button>
+    </view>
+  </view>
+</view>

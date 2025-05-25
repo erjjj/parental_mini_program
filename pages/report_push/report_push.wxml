@@ -1,0 +1,72 @@
+<!-- pages/report_push/report_push.wxml -->
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <text class="title">成长报告推送</text>
+  </view>
+  
+  <!-- 成长报告推送内容 -->
+  <view class="report-push-container">
+    <view class="report-content-box">
+      <view class="report-header">
+        <text class="report-date">成长报告推送时间：{{currentDate}}</text>
+      </view>
+      
+      <!-- 常规报告内容 -->
+      <view class="report-content">
+        <text class="report-text">{{reportContent}}</text>
+      </view>
+      
+      <!-- 话题卡片式布局 -->
+      <view class="topic-cards" wx:if="{{childReport.length > 0}}">
+        <view class="topic-card" wx:for="{{childReport}}" wx:key="index">
+          <view class="topic-header">
+            <text class="topic-title">{{item.topic}}</text>
+          </view>
+          <view class="topic-body">
+            <view class="topic-section">
+              <text class="section-title">孩子的问题：</text>
+              <text class="section-content">{{item.child_utterance}}</text>
+            </view>
+            
+            <view class="topic-section" wx:if="{{item.knowledge_points.length > 0}}">
+              <text class="section-title">相关知识点：</text>
+              <view class="point-list">
+                <text class="point-item" wx:for="{{item.knowledge_points}}" wx:for-item="point" wx:key="index">• {{point}}</text>
+              </view>
+            </view>
+            
+            <view class="topic-section" wx:if="{{item.child_understanding.length > 0}}">
+              <text class="section-title">孩子的理解：</text>
+              <view class="point-list">
+                <text class="point-item" wx:for="{{item.child_understanding}}" wx:for-item="understanding" wx:key="index">• {{understanding}}</text>
+              </view>
+            </view>
+            
+            <view class="topic-section" wx:if="{{item.suggested_next_steps.length > 0}}">
+              <text class="section-title">建议的下一步：</text>
+              <view class="point-list">
+                <text class="point-item" wx:for="{{item.suggested_next_steps}}" wx:for-item="step" wx:key="index">• {{step}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+      
+      <view class="delete-btn-container">
+        <button class="delete-btn" bindtap="deleteReport">一键删除</button>
+      </view>
+    </view>
+  </view>
+  
+  <!-- 底部按钮和设置 -->
+  <view class="bottom-container">
+    <view class="button-group">
+      <button class="function-btn conversation-btn" bindtap="navigateToConversations">对话记录</button>
+      <view class="push-setting">
+        <checkbox checked="{{enablePush}}" bindtap="togglePush"></checkbox>
+        <text class="push-text">开启每日推送</text>
+      </view>
+    </view>
+  </view>
+</view>

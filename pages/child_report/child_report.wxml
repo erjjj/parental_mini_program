@@ -1,0 +1,34 @@
+<!-- pages/child_report/child_report.wxml -->
+<view class="container">
+  <!-- 顶部标题 -->
+  <view class="header">
+    <text class="title">成长报告</text>
+  </view>
+  
+  <!-- 成长报告聊天框 -->
+  <view class="report-chat-container">
+    <block wx:if="{{reportMessages.length > 0}}">
+      <view class="report-item" wx:for="{{reportMessages}}" wx:key="id">
+        <view class="report-header">
+          <text class="report-date">{{item.date}}</text>
+        </view>
+        <view class="report-content">
+          <view class="message-bubble">
+            <view class="achievement-title">{{item.title}}</view>
+            <view class="achievement-content">{{item.content}}</view>
+          </view>
+        </view>
+      </view>
+    </block>
+    <view class="empty-list" wx:else>
+      <text>暂无成长报告</text>
+      <view class="empty-tip">点击下方按钮生成新的成长报告</view>
+    </view>
+  </view>
+  
+  <!-- 底部按钮 -->
+  <view class="button-group">
+    <button class="function-btn conversation-btn" bindtap="navigateToConversations">对话记录</button>
+    <button class="function-btn generate-btn" bindtap="generateReport">生成报告</button>
+  </view>
+</view>

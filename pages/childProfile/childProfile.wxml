@@ -7,6 +7,12 @@
     <text class="title">孩子信息</text>
   </view>
   
+  <!-- 头像上传区域 -->
+  <view class="avatar-section">
+    <image class="avatar" src="{{formData.avatar || '/images/default_avatar.png'}}" mode="aspectFill" bindtap="chooseAndUploadAvatar"></image>
+    <text class="avatar-tip">点击更换头像</text>
+  </view>
+  
   <view class="form-container">
     <view class="form-item">
       <text class="label">姓名</text>
@@ -14,8 +20,17 @@
     </view>
     
     <view class="form-item">
+      <text class="label">出生日期</text>
+      <picker mode="date" value="{{formData.birthday}}" start="2000-01-01" end="2024-12-31" bindchange="bindBirthdayChange">
+        <view class="picker">
+          {{formData.birthday || '请选择出生日期'}}
+        </view>
+      </picker>
+    </view>
+    
+    <view class="form-item">
       <text class="label">年龄</text>
-      <input class="input" type="number" value="{{formData.age}}" bindinput="inputAge" placeholder="请输入孩子年龄"/>
+      <view class="input age-display">{{formData.age || '自动计算'}}岁</view>
     </view>
     
     <view class="form-item">
@@ -33,10 +48,57 @@
     </view>
     
     <view class="form-item">
-      <text class="label">兴趣爱好</text>
-      <input class="input" value="{{formData.interests}}" bindinput="inputInterests" placeholder="请输入孩子兴趣爱好"/>
+      <text class="label">孩子描述</text>
+      <textarea class="textarea" value="{{formData.description}}" bindinput="inputDescription" placeholder="请描述孩子的性格、特点等"></textarea>
+    </view>
+    
+    <view class="form-item">
+      <text class="label">语言</text>
+      <view class="language-switch">
+        <view class="language-option {{formData.language === 'zh' ? 'selected' : ''}}" bindtap="switchLanguage" data-lang="zh">中文</view>
+        <view class="language-option {{formData.language === 'en' ? 'selected' : ''}}" bindtap="switchLanguage" data-lang="en">英文</view>
+      </view>
+    </view>
+    
+    <!-- 标签区域 -->
+    <view class="tags-section">
+      <text class="section-title">兴趣标签</text>
+      <view class="tags-container">
+        <view class="tag-item {{item.selected ? 'selected' : ''}}" 
+              wx:for="{{childTags}}" 
+              wx:key="index"
+              bindtap="toggleTag"
+              data-index="{{index}}">
+          <text>{{item.text}}</text>
+        </view>
+      </view>
+      <view class="tag-select-btn" bindtap="showTagSelector">
+        <text>添加标签</text>
+      </view>
     </view>
   </view>
   
   <button class="save-btn" bindtap="saveChildInfo">保存</button>
+</view>
+
+<!-- 标签选择器弹窗 -->
+<view class="tag-selector-modal" wx:if="{{showTagSelector}}">
+  <view class="tag-selector-content">
+    <view class="tag-selector-header">
+      <text class="tag-selector-title">选择标签</text>
+      <text class="tag-selector-close" bindtap="hideTagSelector">×</text>
+    </view>
+    <view class="tag-selector-list">
+      <view class="tag-selector-item {{item.selected ? 'selected' : ''}}" 
+            wx:for="{{predefinedTags}}" 
+            wx:key="index"
+            bindtap="selectTag"
+            data-index="{{index}}">
+        <text>{{item.text}}</text>
+      </view>
+    </view>
+    <view class="tag-selector-footer">
+      <button class="tag-confirm-btn" bindtap="confirmTagSelection">确认</button>
+    </view>
+  </view>
 </view>

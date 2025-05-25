@@ -1,0 +1,276 @@
+/* pages/agentManagement/agentManagement.wxss */
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 30rpx;
+  background-color: #4A90E2;
+  position: relative;
+}
+
+.back-btn {
+  padding: 10rpx;
+}
+
+.back-icon {
+  font-size: 40rpx;
+  color: #ffffff;
+}
+
+.title {
+  flex: 1;
+  text-align: center;
+  font-size: 36rpx;
+  font-weight: 500;
+  color: #ffffff;
+  margin-right: 50rpx; /* 为了平衡左侧返回按钮的空间 */
+}
+
+/* 智能体列表样式 */
+.agent-list {
+  flex: 1;
+  padding: 30rpx;
+  overflow-y: auto;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+.empty-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 0;
+}
+
+.empty-icon {
+  width: 120rpx;
+  height: 120rpx;
+  margin-bottom: 20rpx;
+}
+
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+  margin-bottom: 30rpx;
+}
+
+.agent-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.agent-item {
+  background-color: #ffffff;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+.agent-info {
+  display: flex;
+  margin-bottom: 20rpx;
+}
+
+.agent-avatar {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+.agent-details {
+  flex: 1;
+}
+
+.agent-name {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #333;
+  display: block;
+  margin-bottom: 10rpx;
+}
+
+.agent-description {
+  font-size: 24rpx;
+  color: #666;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 10rpx;
+}
+
+.agent-id {
+  font-size: 24rpx;
+  color: #999;
+  display: block;
+}
+
+.agent-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20rpx;
+}
+
+.action-btn {
+  font-size: 24rpx;
+  padding: 10rpx 20rpx;
+  border-radius: 30rpx;
+  min-width: 120rpx;
+}
+
+.edit-btn {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  border: 1rpx solid #1890ff;
+}
+
+.delete-btn {
+  background-color: #fff1f0;
+  color: #ff4d4f;
+  border: 1rpx solid #ff4d4f;
+}
+
+.add-btn {
+  margin-top: 30rpx;
+  background-color: #4A90E2;
+  color: #ffffff;
+  font-size: 28rpx;
+  padding: 15rpx 0;
+  border-radius: 8rpx;
+  width: 100%;
+}
+
+/* 弹窗样式 */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  width: 80%;
+  background-color: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 20rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1rpx solid #eee;
+}
+
+.modal-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.close-btn {
+  font-size: 40rpx;
+  color: #999;
+  padding: 0 10rpx;
+}
+
+.modal-body {
+  padding: 30rpx;
+}
+
+.form-item {
+  margin-bottom: 20rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 28rpx;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  border: 1rpx solid #eee;
+  border-radius: 8rpx;
+  padding: 0 20rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.form-textarea {
+  width: 100%;
+  height: 160rpx;
+  border: 1rpx solid #eee;
+  border-radius: 8rpx;
+  padding: 20rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.confirm-btn {
+  margin-top: 30rpx;
+  background-color: #4A90E2;
+  color: #ffffff;
+  font-size: 28rpx;
+  padding: 15rpx 0;
+  border-radius: 8rpx;
+  width: 100%;
+}
+
+/* 删除确认弹窗 */
+.confirm-message {
+  font-size: 28rpx;
+  color: #333;
+  text-align: center;
+  margin-bottom: 30rpx;
+}
+
+.confirm-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 20rpx;
+}
+
+.cancel-btn {
+  flex: 1;
+  background-color: #f0f0f0;
+  color: #666;
+  font-size: 28rpx;
+  padding: 15rpx 0;
+  border-radius: 8rpx;
+}
+
+.confirm-delete-btn {
+  flex: 1;
+  background-color: #ff4d4f;
+  color: #ffffff;
+  font-size: 28rpx;
+  padding: 15rpx 0;
+  border-radius: 8rpx;
+}
