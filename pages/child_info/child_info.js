@@ -561,7 +561,7 @@ Page({
     this.setData({
       showDeviceMatchModal: true,
       activationCode: '',
-      agentId: '9db911fb1cc7aaea87c15146cce5cb99'
+      agentId: '349a5021389e4adbb74fca7b268fcee7'
     });
   },
   
@@ -629,53 +629,79 @@ Page({
       });
       return;
     }
-    
-    // 调用后端API激活设备
+    // 调用我们自己的后端API激活设备
     wx.request({
-      url: 'https://server.myia.fun/api/device/bind/' + agentId + '/' + activationCode,
+      url: 'https://www.myia.fun/api/device/activate',
       method: 'POST',
       header: {
+        'content-type': 'application/json',
         'Authorization': 'Bearer ' + token
       },
+      data: {
+        activationCode: activationCode,
+        agentId: agentId
+      },
       success: (res) => {
-        if (res.data.code === 0 || res.data.success) {
-          wx.showToast({
-            title: '设备匹配成功',
-            icon: 'success'
-          });
-          
-          // 关闭弹窗
-          this.hideDeviceMatchModal();
-          
-          // 获取本地存储的孩子信息
-          const childInfo = wx.getStorageSync('childInfo');
-          
-          // 如果有孩子信息且有孩子ID，则关联设备与孩子
-          if (childInfo && childInfo.id) {
-            // 调用后端API关联设备与孩子
-            wx.request({
-              url: 'https://www.myia.fun/api/device/link-child',
-              method: 'POST',
-              header: {
-                'content-type': 'application/json',
-                'Authorization': 'Bearer ' + token
-              },
-              data: {
-                deviceId: agentId,
-                childId: childInfo.id
-              },
-              success: (linkRes) => {
-                console.log('设备与孩子关联成功:', linkRes.data);
-              },
-              fail: (err) => {
-                console.error('设备与孩子关联失败:', err);
+        if (res.data.success) {
+          // 调用智控台API完成设备与智控台的绑定
+          wx.request({
+            url: 'https://server.myia.fun/xiaozhi/device/bind/' + agentId + '/' + activationCode,
+            method: 'POST',
+            header: {
+              'content-type': 'application/json',
+              'Authorization': 'Bearer'+ ' cad835a093c6c3c81d4f0671b112a3e7'
+            },
+            success: (bindRes) => {
+              console.log('设备与智控台绑定成功:', bindRes.data);
+              wx.showToast({
+                title: '设备激活成功',
+                icon: 'success'
+              });
+              
+              // 关闭弹窗
+              this.hideDeviceMatchModal();
+              
+              // 获取本地存储的孩子信息
+              const childInfo = wx.getStorageSync('childInfo');
+              
+              // 如果有孩子信息且有孩子ID，则关联设备与孩子
+              if (childInfo && childInfo.id) {
+                // 调用后端API关联设备与孩子
+                wx.request({
+                  url: 'https://www.myia.fun/api/device/link-child',
+                  method: 'POST',
+                  header: {
+                    'content-type': 'application/json',
+                    'Authorization': 'Bearer ' + token
+                  },
+                  data: {
+                    deviceId: res.data.deviceId, // 使用从服务器返回的deviceId
+                    childId: childInfo.id
+                  },
+                  success: (linkRes) => {
+                    console.log('设备与孩子关联成功:', linkRes.data);
+                  },
+                  fail: (err) => {
+                    console.error('设备与孩子关联失败:', err);
+                  }
+                });
               }
-            });
-          }
-          
-          // 可以选择跳转到设备管理页面
-          wx.navigateTo({
-            url: '/pages/deviceManagement/deviceManagement'
+              
+              // 可以选择跳转到设备管理页面
+              wx.navigateTo({
+                url: '/pages/deviceManagement/deviceManagement'
+              });
+            },
+            fail: (bindErr) => {
+              console.error('设备与智控台绑定失败:', bindErr);
+              wx.showToast({
+                title: '设备激活失败',
+                icon: 'none'
+              });
+              this.setData({
+                isActivating: false
+              });
+            }
           });
         
         } else {

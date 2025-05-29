@@ -6,9 +6,40 @@ const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const dbUtil = require('./dbUtil');
 const crypto = require('crypto');
+const redis = require('redis');
 
 const JWT_SECRET = process.env.JWT_SECRET; // 使用环境变量中的密钥
 const mysql = require('mysql');
+
+// 创建Redis客户端
+const redisClient = redis.createClient({
+  host: process.env.REDIS_HOST || '172.18.168.239',
+  port: process.env.REDIS_PORT || 6379,
+  password: process.env.REDIS_PASSWORD || 'tK8MxFpNMAR7R2B3'
+});
+
+// Redis连接错误处理
+redisClient.on('error', (err) => {
+  console.error('❌ Redis连接错误:', err);
+});
+
+// Redis连接成功处理
+redisClient.on('connect', () => {
+  console.log('✅ Redis连接成功');
+});
+
+// 从Redis获取值的Promise包装函数
+const getRedisValue = (key) => {
+  return new Promise((resolve, reject) => {
+    redisClient.get(key, (err, reply) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      resolve(reply);
+    });
+  });
+};
 
 // 创建数据库连接池
 const pool = mysql.createPool({
@@ -250,6 +281,74 @@ app.post('/api/child/update', verifyToken, async (req, res) => {
   }
 });
 
+// 设备激活接口 - 从Redis获取deviceID并返回，并将设备ID和孩子ID存入device_info表
+app.post('/api/device/activate', verifyToken, async (req, res) => {
+  try {
+    const { activationCode, agentId } = req.body;
+    
+    if (!activationCode || !agentId) {
+      return res.status(400).json({ success: false, message: '缺少必要参数' });
+    }
+    
+    // 验证激活码格式
+    if (activationCode.length !== 6) {
+      return res.status(400).json({ success: false, message: '激活码格式错误' });
+    }
+    
+    // 拼接Redis缓存key
+    const deviceKey = `ota:activation:code:${activationCode}`;
+    
+    // 从Redis获取deviceID
+    try {
+      const deviceId = await getRedisValue(deviceKey);
+      
+      if (!deviceId) {
+        return res.status(404).json({ success: false, message: '激活码无效或已过期' });
+      }
+      
+      // 根据wechat_id查询用户ID
+      const userInfo = await dbUtil.findOne('user_info', { wechat_id: req.user.id });
+      if (!userInfo) {
+        return res.status(404).json({ success: false, message: '用户信息不存在' });
+      }
+      
+      // 根据parent_id查询孩子ID
+      const childInfo = await dbUtil.findOne('child_info', { parent_id: userInfo.id });
+      if (!childInfo) {
+        return res.status(404).json({ success: false, message: '孩子信息不存在，请先创建孩子信息' });
+      }
+      
+      // 检查设备是否已存在
+      const existingDevice = await dbUtil.findOne('device_info', { device_id: deviceId });
+      
+      if (existingDevice) {
+        // 更新设备关联的孩子ID
+        await dbUtil.update('device_info', { child_id: childInfo.id }, { device_id: deviceId });
+      } else {
+        // 创建新的设备记录
+        await dbUtil.insert('device_info', {
+          device_id: deviceId,
+          child_id: childInfo.id
+        });
+      }
+      
+      // 返回成功和deviceID
+      res.json({
+        success: true,
+        deviceId: deviceId,
+        message: '设备激活成功'
+      });
+      
+    } catch (redisError) {
+      console.error('Redis查询错误:', redisError);
+      res.status(500).json({ success: false, message: '服务器内部错误' });
+    }
+  } catch (error) {
+    console.error('设备激活错误:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 // 设备与孩子关联接口
 app.post('/api/device/link-child', verifyToken, async (req, res) => {
   try {
@@ -260,15 +359,15 @@ app.post('/api/device/link-child', verifyToken, async (req, res) => {
     }
     
     // 检查设备是否已存在
-    const existingDevice = await dbUtil.findOne('device_info', { id: deviceId });
+    const existingDevice = await dbUtil.findOne('device_info', { device_id: deviceId });
     
     if (existingDevice) {
       // 更新设备关联的孩子ID
-      await dbUtil.update('device_info', { child_id: childId }, { id: deviceId });
+      await dbUtil.update('device_info', { child_id: childId }, { device_id: deviceId });
     } else {
       // 创建新的设备记录
       await dbUtil.insert('device_info', {
-        id: deviceId,
+        device_id: deviceId,
         child_id: childId
       });
     }
